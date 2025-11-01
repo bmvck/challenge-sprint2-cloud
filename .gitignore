@@ -1,0 +1,19 @@
+# Segredos e chaves
+.env
+*.key
+*.pem
+**/.docker/**
+
+# Maven/Java
+**/target/
+
+# .NET
+**/bin/
+**/obj/
+
+# Node (se usar)
+node_modules/
+
+# IDE/Editor
+.vscode/
+.idea/
