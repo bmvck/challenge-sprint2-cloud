@@ -1,0 +1,43 @@
+package com.fiap.financecontrol.gateways.dtos;
+
+import com.fiap.financecontrol.domains.Cliente;
+import jakarta.validation.constraints.Email;
+import jakarta.validation.constraints.NotBlank;
+import jakarta.validation.constraints.Pattern;
+import jakarta.validation.constraints.Size;
+import lombok.Data;
+
+@Data
+public class ClienteRequestDto {
+
+    @NotBlank(message = "Nome do cliente é obrigatório")
+    @Size(max = 100, message = "Nome do cliente deve ter no máximo 100 caracteres")
+    private String nomeCliente;
+
+    @NotBlank(message = "CPF/CNPJ é obrigatório")
+    @Size(max = 14, message = "CPF/CNPJ deve ter no máximo 14 caracteres")
+    @Pattern(regexp = "\\d{11}|\\d{14}", message = "CPF deve ter 11 dígitos ou CNPJ deve ter 14 dígitos")
+    private String cpfCnpj;
+
+    @NotBlank(message = "Email é obrigatório")
+    @Email(message = "Email deve ter formato válido")
+    @Size(max = 100, message = "Email deve ter no máximo 100 caracteres")
+    private String email;
+
+    @NotBlank(message = "Senha é obrigatória")
+    @Size(min = 6, max = 100, message = "Senha deve ter entre 6 e 100 caracteres")
+    private String senha;
+
+    @Pattern(regexp = "[SN]", message = "Status ativo deve ser 'S' ou 'N'")
+    private String ativo = "S";
+
+    public Cliente toEntity() {
+        return Cliente.builder()
+                .nomeCliente(this.nomeCliente)
+                .cpfCnpj(this.cpfCnpj)
+                .email(this.email)
+                .senha(this.senha)
+                .ativo(this.ativo)
+                .build();
+    }
+}

@@ -1,0 +1,55 @@
+# ===== .NET / Build =====
+[Bb]in/
+[Oo]bj/
+[Ll]og/
+[Ll]ogs/
+*.log
+artifacts/
+
+# Testes e cobertura
+TestResults/
+coverage/
+*.coverage
+*.coveragexml
+
+# ===== IDEs =====
+# Visual Studio
+.vs/
+*.rsuser
+*.suo
+*.user
+*.userosscache
+*.sln.docstates
+
+# JetBrains Rider
+.idea/
+
+# VS Code
+.vscode/
+
+# ===== NuGet / ferramentas =====
+*.nupkg
+*.snupkg
+.packages/
+
+# ReSharper etc.
+_ReSharper*/
+*.DotSettings.user
+
+# ===== SO =====
+.DS_Store
+Thumbs.db
+
+# ===== SPA/Front (se usar) =====
+node_modules/
+dist/
+wwwroot/lib/
+.next/
+.nuxt/
+.cache/
+public
+
+# ===== Configs locais / segredos (opcional) =====
+.env
+appsettings.*.local.jsonbin/
+obj/

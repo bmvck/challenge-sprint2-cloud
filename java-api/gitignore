@@ -1,0 +1,114 @@
+### Build / Java ###
+target/
+*.class
+*.jar
+*.war
+*.ear
+*.zip
+*.tar
+*.tar.gz
+*.log
+hs_err_pid*
+replay_pid*
+*.hprof
+
+### Maven ###
+# Mantém o Maven Wrapper no repositório
+.mvn/timing.properties
+!/.mvn/wrapper/maven-wrapper.jar
+!mvnw
+!mvnw.cmd
+
+### Spring Boot / Config ###
+# Arquivos de variáveis e segredos locais
+.env
+.env.*
+*.local.properties
+application-*.local.yml
+application-*.local.yaml
+application-*.secrets.yml
+application-*.secrets.yaml
+
+# (opcional) ignore credenciais específicas de dev
+#application-dev.yml
+#application-test.yml
+
+### IDEs ###
+# IntelliJ IDEA
+.idea/
+*.iws
+*.iml
+*.ipr
+out/
+
+# VS Code
+.vscode/
+
+# Eclipse (se alguém abrir no Eclipse por engano)
+.project
+.classpath
+.settings/
+
+# NetBeans
+.nb-gradle/
+nbproject/private/
+build/
+
+### Testes / Cobertura ###
+surefire-reports/
+failsafe-reports/
+junit-platform.properties
+jacoco.exec
+.jacoco/
+coverage/
+.site/
+
+### Docker / Compose ###
+docker/*.log
+docker/**/data/
+docker/**/tmp/
+docker-compose.override.yml
+
+### Bancos embarcados e caches ###
+*.h2.db
+*.mv.db
+*.db
+*.sqlite
+*.derby
+*.lck
+*.lock
+
+### Certificados / chaves (NÃO versionar segredos) ###
+*.jks
+*.keystore
+*.p12
+*.pfx
+*.pem
+*.crt
+*.cer
+*.key
+
+### SO / Editor ###
+# Windows
+Thumbs.db
+ehthumbs.db
+Desktop.ini
+
+# macOS
+.DS_Store
+.AppleDouble
+.LSOverride
+
+# Linux
+*~
+
+# Arquivos temporários comuns
+*.swp
+*.swo
+*.tmp
+*.bak
+
+### Logs e artefatos locais ###
+logs/
+*.out
+*.pid

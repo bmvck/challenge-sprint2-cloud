@@ -1,0 +1,275 @@
+{
+  "info": {
+    "name": "Finance Control API",
+    "description": "Collection para testar a API de Gestão Financeira e Contábil",
+    "schema": "https://schema.getpostman.com/json/collection/v2.1.0/collection.json"
+  },
+  "item": [
+    {
+      "name": "Clientes",
+      "item": [
+        {
+          "name": "Listar Clientes",
+          "request": {
+            "method": "GET",
+            "header": [],
+            "url": {
+              "raw": "{{baseUrl}}/fiap/clientes?page=0&size=10&direction=ASC",
+              "host": ["{{baseUrl}}"],
+              "path": ["fiap", "clientes"],
+              "query": [
+                {"key": "page", "value": "0"},
+                {"key": "size", "value": "10"},
+                {"key": "direction", "value": "ASC"}
+              ]
+            }
+          }
+        },
+        {
+          "name": "Buscar Cliente por ID",
+          "request": {
+            "method": "GET",
+            "header": [],
+            "url": {
+              "raw": "{{baseUrl}}/fiap/clientes/1",
+              "host": ["{{baseUrl}}"],
+              "path": ["fiap", "clientes", "1"]
+            }
+          }
+        },
+        {
+          "name": "Criar Cliente",
+          "request": {
+            "method": "POST",
+            "header": [
+              {
+                "key": "Content-Type",
+                "value": "application/json"
+              }
+            ],
+            "body": {
+              "mode": "raw",
+              "raw": "{\n  \"nomeCliente\": \"João Silva\",\n  \"cpfCnpj\": \"12345678901\",\n  \"email\": \"joao@email.com\",\n  \"senha\": \"senha123\",\n  \"ativo\": \"S\"\n}"
+            },
+            "url": {
+              "raw": "{{baseUrl}}/fiap/clientes",
+              "host": ["{{baseUrl}}"],
+              "path": ["fiap", "clientes"]
+            }
+          }
+        },
+        {
+          "name": "Atualizar Cliente",
+          "request": {
+            "method": "PUT",
+            "header": [
+              {
+                "key": "Content-Type",
+                "value": "application/json"
+              }
+            ],
+            "body": {
+              "mode": "raw",
+              "raw": "{\n  \"nomeCliente\": \"João Silva Santos\",\n  \"cpfCnpj\": \"12345678901\",\n  \"email\": \"joao.santos@email.com\",\n  \"senha\": \"senha123\",\n  \"ativo\": \"S\"\n}"
+            },
+            "url": {
+              "raw": "{{baseUrl}}/fiap/clientes/1",
+              "host": ["{{baseUrl}}"],
+              "path": ["fiap", "clientes", "1"]
+            }
+          }
+        },
+        {
+          "name": "Deletar Cliente",
+          "request": {
+            "method": "DELETE",
+            "header": [],
+            "url": {
+              "raw": "{{baseUrl}}/fiap/clientes/1",
+              "host": ["{{baseUrl}}"],
+              "path": ["fiap", "clientes", "1"]
+            }
+          }
+        }
+      ]
+    },
+    {
+      "name": "Centros de Custo",
+      "item": [
+        {
+          "name": "Listar Centros de Custo",
+          "request": {
+            "method": "GET",
+            "header": [],
+            "url": {
+              "raw": "{{baseUrl}}/fiap/centros-custo?page=0&size=10&direction=ASC",
+              "host": ["{{baseUrl}}"],
+              "path": ["fiap", "centros-custo"],
+              "query": [
+                {"key": "page", "value": "0"},
+                {"key": "size", "value": "10"},
+                {"key": "direction", "value": "ASC"}
+              ]
+            }
+          }
+        },
+        {
+          "name": "Criar Centro de Custo",
+          "request": {
+            "method": "POST",
+            "header": [
+              {
+                "key": "Content-Type",
+                "value": "application/json"
+              }
+            ],
+            "body": {
+              "mode": "raw",
+              "raw": "{\n  \"nomeCentroCusto\": \"Vendas Online\"\n}"
+            },
+            "url": {
+              "raw": "{{baseUrl}}/fiap/centros-custo",
+              "host": ["{{baseUrl}}"],
+              "path": ["fiap", "centros-custo"]
+            }
+          }
+        }
+      ]
+    },
+    {
+      "name": "Contas",
+      "item": [
+        {
+          "name": "Listar Contas",
+          "request": {
+            "method": "GET",
+            "header": [],
+            "url": {
+              "raw": "{{baseUrl}}/fiap/contas?page=0&size=10&direction=ASC",
+              "host": ["{{baseUrl}}"],
+              "path": ["fiap", "contas"],
+              "query": [
+                {"key": "page", "value": "0"},
+                {"key": "size", "value": "10"},
+                {"key": "direction", "value": "ASC"}
+              ]
+            }
+          }
+        },
+        {
+          "name": "Criar Conta",
+          "request": {
+            "method": "POST",
+            "header": [
+              {
+                "key": "Content-Type",
+                "value": "application/json"
+              }
+            ],
+            "body": {
+              "mode": "raw",
+              "raw": "{\n  \"nomeConta\": \"Receita de Vendas\",\n  \"tipo\": \"R\",\n  \"clienteId\": 1\n}"
+            },
+            "url": {
+              "raw": "{{baseUrl}}/fiap/contas",
+              "host": ["{{baseUrl}}"],
+              "path": ["fiap", "contas"]
+            }
+          }
+        }
+      ]
+    },
+    {
+      "name": "Registros Contábeis",
+      "item": [
+        {
+          "name": "Listar Registros Contábeis",
+          "request": {
+            "method": "GET",
+            "header": [],
+            "url": {
+              "raw": "{{baseUrl}}/fiap/registros-contabeis?page=0&size=10&direction=ASC",
+              "host": ["{{baseUrl}}"],
+              "path": ["fiap", "registros-contabeis"],
+              "query": [
+                {"key": "page", "value": "0"},
+                {"key": "size", "value": "10"},
+                {"key": "direction", "value": "ASC"}
+              ]
+            }
+          }
+        },
+        {
+          "name": "Criar Registro Contábil",
+          "request": {
+            "method": "POST",
+            "header": [
+              {
+                "key": "Content-Type",
+                "value": "application/json"
+              }
+            ],
+            "body": {
+              "mode": "raw",
+              "raw": "{\n  \"valor\": 1500.00,\n  \"contaId\": 1,\n  \"centroCustoId\": 1\n}"
+            },
+            "url": {
+              "raw": "{{baseUrl}}/fiap/registros-contabeis",
+              "host": ["{{baseUrl}}"],
+              "path": ["fiap", "registros-contabeis"]
+            }
+          }
+        }
+      ]
+    },
+    {
+      "name": "Vendas",
+      "item": [
+        {
+          "name": "Listar Vendas",
+          "request": {
+            "method": "GET",
+            "header": [],
+            "url": {
+              "raw": "{{baseUrl}}/fiap/vendas?page=0&size=10&direction=ASC",
+              "host": ["{{baseUrl}}"],
+              "path": ["fiap", "vendas"],
+              "query": [
+                {"key": "page", "value": "0"},
+                {"key": "size", "value": "10"},
+                {"key": "direction", "value": "ASC"}
+              ]
+            }
+          }
+        },
+        {
+          "name": "Criar Venda",
+          "request": {
+            "method": "POST",
+            "header": [
+              {
+                "key": "Content-Type",
+                "value": "application/json"
+              }
+            ],
+            "body": {
+              "mode": "raw",
+              "raw": "{\n  \"clienteId\": 1,\n  \"registroContabilId\": 1\n}"
+            },
+            "url": {
+              "raw": "{{baseUrl}}/fiap/vendas",
+              "host": ["{{baseUrl}}"],
+              "path": ["fiap", "vendas"]
+            }
+          }
+        }
+      ]
+    }
+  ],
+  "variable": [
+    {
+      "key": "baseUrl",
+      "value": "http://localhost:8080"
+    }
+  ]
+}
