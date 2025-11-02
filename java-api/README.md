@@ -23,7 +23,26 @@ A aplicação segue os princípios de:
 - **Programação Orientada a Objetos (POO)**
 - **Coesão e Desacoplamento**
 - **Padrões de Projeto** (Repository, Service Layer, DTO)
-- **API RESTful** (Nível 1 - Richardson Maturity Model)
+- **API RESTful** (Nível 3 - Richardson Maturity Model com HATEOAS)
+
+### Arquitetura e Módulos
+
+#### API Java (Este Projeto)
+Esta API Spring Boot gerencia os domínios financeiros e contábeis:
+- **Clientes**: Gestão de clientes
+- **Centros de Custo**: Organização contábil
+- **Contas Contábeis**: Contas de receita e despesa
+- **Registros Contábeis**: Lançamentos financeiros
+- **Vendas**: Registro de vendas
+
+#### Módulo IoT (Oracle Apex)
+As tabelas relacionadas a IoT (`dispositivo_iot`, `servico`, `venda_evento`) são gerenciadas por um módulo separado desenvolvido com **Oracle Apex**. Esta separação de responsabilidades garante:
+- **Modularidade**: Cada sistema focado em seu domínio específico
+- **Escalabilidade**: Evolução independente dos módulos
+- **Manutenibilidade**: Código mais organizado e fácil de manter
+- **Performance**: Otimização específica para cada contexto
+
+Os dados são compartilhados através do mesmo banco de dados Oracle, permitindo integração entre os módulos quando necessário.
 
 ### Estrutura de Pacotes
 
@@ -55,26 +74,26 @@ com.fiap.financecontrol/
 # Password: (vazio)
 ```
 
-#### Ambiente de Desenvolvimento (Oracle FIAP)
+#### Ambiente de Desenvolvimento (Oracle)
 ```bash
-# Configure as variáveis de ambiente:
-export DB_USERNAME=rm560088
-export DB_PASSWORD=061005
+# Configure as variáveis de ambiente (opcional):
+export DB_USERNAME=appuser
+export DB_PASSWORD=AppPass#2025
 
 # Execute com profile dev:
 mvn spring-boot:run -Dspring-boot.run.profiles=dev
 ```
 
-**Configuração do Oracle FIAP:**
-- **Host**: oracle.fiap.com.br
+**Configuração do Oracle:**
+- **Host**: 140.238.179.84
 - **Porta**: 1521
-- **SID**: ord
-- **Usuário**: rm560088
-- **Senha**: 061005
+- **Service Name**: FREEPDB1
+- **Usuário**: appuser
+- **Senha**: AppPass#2025
 
 **Antes de executar, certifique-se de:**
-1. Executar o script `docs/database/setup-oracle-fiap.sql` no Oracle SQL Developer
-2. O script criará as tabelas, sequences, constraints e dados de teste
+1. Executar o script `docs/database/challenge_oracle2_fixed.sql` no Oracle SQL Developer
+2. O script criará as tabelas, sequences, constraints e dados padrão
 
 ### Executando a Aplicação
 
@@ -98,45 +117,91 @@ A aplicação estará disponível em: `http://localhost:8080`
 ## Documentação da API
 
 ### Swagger/OpenAPI
-Acesse a documentação interativa da API em:
+
 - **Swagger UI**: http://localhost:8080/swagger-ui.html
 - **OpenAPI JSON**: http://localhost:8080/api-docs
+
+
+### HATEOAS (Hypermedia as the Engine of Application State)
+
+A API implementa **HATEOAS nível 3** do Richardson Maturity Model. Todas as respostas incluem links que permitem navegação dinâmica pelos recursos:
+
+#### Exemplo de Resposta com Links
+```json
+{
+  "id": 1,
+  "nomeCliente": "João Silva",
+  "email": "joao@email.com",
+  "_links": {
+    "self": {
+      "href": "http://localhost:8080/fiap/clientes/1"
+    },
+    "update": {
+      "href": "http://localhost:8080/fiap/clientes/1"
+    },
+    "delete": {
+      "href": "http://localhost:8080/fiap/clientes/1"
+    },
+    "contas": {
+      "href": "http://localhost:8080/fiap/contas?clienteId=1"
+    },
+    "vendas": {
+      "href": "http://localhost:8080/fiap/vendas?clienteId=1"
+    }
+  }
+}
+```
+
+#### Navegação via Links
+Os clientes podem navegar pela API seguindo os links fornecidos nas respostas:
+- **self**: Link para o próprio recurso
+- **update**: Link para atualizar o recurso
+- **delete**: Link para deletar o recurso
+- **relacionados**: Links para recursos relacionados (ex: cliente → contas, vendas)
+
+#### Paginação com Links
+Nas respostas paginadas, são fornecidos links de navegação:
+- **first**: Primeira página
+- **prev**: Página anterior (se existir)
+- **self**: Página atual
+- **next**: Próxima página (se existir)
+- **last**: Última página
 
 ### Endpoints Disponíveis
 
 #### Clientes
-- `GET /fiap/clientes` - Listar clientes (com paginação e filtros)
-- `GET /fiap/clientes/{id}` - Buscar cliente por ID
-- `POST /fiap/clientes` - Criar novo cliente
-- `PUT /fiap/clientes/{id}` - Atualizar cliente
+- `GET /fiap/clientes` - Listar clientes (com paginação, filtros e links HATEOAS)
+- `GET /fiap/clientes/{id}` - Buscar cliente por ID (com links HATEOAS)
+- `POST /fiap/clientes` - Criar novo cliente (retorna com links HATEOAS)
+- `PUT /fiap/clientes/{id}` - Atualizar cliente (retorna com links HATEOAS)
 - `DELETE /fiap/clientes/{id}` - Deletar cliente
 
 #### Centros de Custo
-- `GET /fiap/centros-custo` - Listar centros de custo
-- `GET /fiap/centros-custo/{id}` - Buscar centro de custo por ID
-- `POST /fiap/centros-custo` - Criar novo centro de custo
-- `PUT /fiap/centros-custo/{id}` - Atualizar centro de custo
+- `GET /fiap/centros-custo` - Listar centros de custo (com paginação e links HATEOAS)
+- `GET /fiap/centros-custo/{id}` - Buscar centro de custo por ID (com links HATEOAS)
+- `POST /fiap/centros-custo` - Criar novo centro de custo (retorna com links HATEOAS)
+- `PUT /fiap/centros-custo/{id}` - Atualizar centro de custo (retorna com links HATEOAS)
 - `DELETE /fiap/centros-custo/{id}` - Deletar centro de custo
 
 #### Contas
-- `GET /fiap/contas` - Listar contas (com filtros por tipo)
-- `GET /fiap/contas/{id}` - Buscar conta por ID
-- `POST /fiap/contas` - Criar nova conta
-- `PUT /fiap/contas/{id}` - Atualizar conta
+- `GET /fiap/contas` - Listar contas (com filtros por tipo e links HATEOAS)
+- `GET /fiap/contas/{id}` - Buscar conta por ID (com links HATEOAS)
+- `POST /fiap/contas` - Criar nova conta (retorna com links HATEOAS)
+- `PUT /fiap/contas/{id}` - Atualizar conta (retorna com links HATEOAS)
 - `DELETE /fiap/contas/{id}` - Deletar conta
 
 #### Registros Contábeis
-- `GET /fiap/registros-contabeis` - Listar registros contábeis
-- `GET /fiap/registros-contabeis/{id}` - Buscar registro por ID
-- `POST /fiap/registros-contabeis` - Criar novo registro
-- `PUT /fiap/registros-contabeis/{id}` - Atualizar registro
+- `GET /fiap/registros-contabeis` - Listar registros contábeis (com filtros e links HATEOAS)
+- `GET /fiap/registros-contabeis/{id}` - Buscar registro por ID (com links HATEOAS)
+- `POST /fiap/registros-contabeis` - Criar novo registro (retorna com links HATEOAS)
+- `PUT /fiap/registros-contabeis/{id}` - Atualizar registro (retorna com links HATEOAS)
 - `DELETE /fiap/registros-contabeis/{id}` - Deletar registro
 
 #### Vendas
-- `GET /fiap/vendas` - Listar vendas
-- `GET /fiap/vendas/{id}` - Buscar venda por ID
-- `POST /fiap/vendas` - Criar nova venda
-- `PUT /fiap/vendas/{id}` - Atualizar venda
+- `GET /fiap/vendas` - Listar vendas (com filtros e links HATEOAS)
+- `GET /fiap/vendas/{id}` - Buscar venda por ID (com links HATEOAS)
+- `POST /fiap/vendas` - Criar nova venda (retorna com links HATEOAS)
+- `PUT /fiap/vendas/{id}` - Atualizar venda (retorna com links HATEOAS)
 - `DELETE /fiap/vendas/{id}` - Deletar venda
 
 ### Parâmetros de Paginação
@@ -183,21 +248,32 @@ POST /fiap/registros-contabeis
 ## Diagramas
 
 ### Diagrama de Entidade-Relacionamento (DER)
-![DER](docs/diagrams/der.png)
+![DER](docs/er_diagram.png)
+
+**Nota**: O diagrama inclui as tabelas IoT (`dispositivo_iot`, `servico`, `venda_evento`) que são gerenciadas pelo módulo Oracle Apex separado.
 
 ### Diagrama de Classes das Entidades
-![Diagrama de Classes](docs/diagrams/class-diagram.png)
+![Diagrama de Classes](docs/uml_classes.png)
 
 ### Arquitetura da Aplicação
-![Arquitetura](docs/diagrams/architecture.png)
+![Arquitetura](docs/arch_overview.png)
 
 ## Testes da API
 
 ### Collection Postman/Insomnia
 Acesse a pasta `docs/api-tests/` para encontrar:
-- `postman-collection.json` - Collection completa do Postman
-- Todos os endpoints com exemplos de requisições
-- Casos de teste para validação
+- `postman-collection.json` - Collection completa do Postman com:
+  - Todos os endpoints CRUD para todas as entidades
+  - **Testes automatizados de HATEOAS** (validação de links)
+  - Testes de paginação com links
+  - Exemplos de navegação via links
+  - Variáveis de ambiente para facilitar testes
+
+**Como usar:**
+1. Importe a collection no Postman/Insomnia
+2. Configure a variável `baseUrl` se necessário (padrão: http://localhost:8080)
+3. Execute os testes na ordem sugerida (Criar → Listar → Buscar → Atualizar → Deletar)
+4. Os testes HATEOAS validam automaticamente a presença e estrutura dos links
 
 ### Executando Testes
 ```bash
@@ -232,17 +308,19 @@ A aplicação gera logs detalhados para:
 
 ## Estrutura do Banco de Dados
 
-### Oracle FIAP
-O banco de dados Oracle FIAP deve ser configurado com as seguintes tabelas:
+### Oracle Database
+O banco de dados Oracle deve ser configurado com as seguintes tabelas:
 - `CLIENTE` - Dados dos clientes
 - `CENTRO_CUSTO` - Centros de custo
-- `CONTA` - Contas contábeis
+- `CONTA_CONTABIL` - Contas contábeis (renomeada de CONTA na Sprint 2)
 - `REG_CONT` - Registros contábeis
 - `VENDAS` - Registro de vendas
+- `DISPOSITIVO_IOT` - Dispositivos IoT (gerenciado pelo módulo Oracle Apex)
+- `SERVICO` - Serviços disponíveis (gerenciado pelo módulo Oracle Apex)
+- `VENDA_EVENTO` - Eventos de venda via IoT (gerenciado pelo módulo Oracle Apex)
 
 **Scripts disponíveis:**
-- `docs/database/setup-oracle-fiap.sql` - Script completo para Oracle FIAP (inclui dados de teste)
-- `docs/database/challenge_oracle2_fixed.sql` - Script original do challenge
+- `docs/database/challenge_oracle2_fixed.sql` - Script completo do banco de dados (inclui todas as tabelas)
 
 ### H2 (Desenvolvimento Local)
 Para desenvolvimento local, a aplicação usa H2 em memória que cria automaticamente as tabelas.
@@ -309,7 +387,7 @@ SELECT 'CLIENTE_SEQ' as SEQUENCE_NAME, CLIENTE_SEQ.CURRVAL as CURRENT_VALUE FROM
 
 ## Status do Projeto
 
-✅ **Implementação Completa**
+### Sprint 1 ✅
 - [x] Estrutura base do projeto Spring Boot
 - [x] 5 entidades JPA com relacionamentos
 - [x] Repositories com métodos customizados
@@ -319,7 +397,21 @@ SELECT 'CLIENTE_SEQ' as SEQUENCE_NAME, CLIENTE_SEQ.CURRVAL as CURRENT_VALUE FROM
 - [x] Tratamento global de exceções
 - [x] Documentação completa
 - [x] Testes unitários
-- [x] Configuração para Oracle FIAP e H2
+- [x] Configuração para Oracle e H2
+- [x] API RESTful Nível 1 (Richardson Maturity Model)
+
+### Sprint 2 ✅
+- [x] Atualização do banco de dados (CONTA → CONTA_CONTABIL)
+- [x] Correção de mapeamentos JPA
+- [x] **Implementação HATEOAS Nível 3**
+- [x] Links de navegação em todas as respostas
+- [x] Links de paginação
+- [x] Links relacionados entre recursos
+- [x] SpringDoc OpenAPI (temporariamente desabilitado - ver nota no README)
+- [x] Collection Postman atualizada com testes HATEOAS
+- [x] Documentação atualizada
+
+Para mais detalhes sobre as mudanças da Sprint 2, consulte: [docs/SPRINT2_MUDANCAS.md](docs/SPRINT2_MUDANCAS.md)
 
 ## Funcionalidades Implementadas
 
@@ -331,8 +423,10 @@ SELECT 'CLIENTE_SEQ' as SEQUENCE_NAME, CLIENTE_SEQ.CURRVAL as CURRENT_VALUE FROM
 - **Vendas**: Registro de vendas vinculadas a clientes e registros contábeis
 
 ### ✅ API RESTful
-- **Nível 1 Richardson Maturity Model**
+- **Nível 3 Richardson Maturity Model** (HATEOAS implementado)
 - **Paginação** em todos os endpoints de listagem
+- **Links HATEOAS** em todas as respostas (self, update, delete, relacionados)
+- **Navegação dinâmica** via links nas respostas
 - **Filtros** por nome, tipo, data, valor
 - **Validações** Bean Validation
 - **Status HTTP** apropriados (200, 201, 204, 400, 404, 409, 500)
@@ -342,11 +436,3 @@ SELECT 'CLIENTE_SEQ' as SEQUENCE_NAME, CLIENTE_SEQ.CURRVAL as CURRENT_VALUE FROM
 - **Coesão**: Cada classe com responsabilidade única
 - **Desacoplamento**: Controllers → Services → Repositories
 - **Padrões**: Repository, Service Layer, DTO, Strategy
-
-## Contribuição
-
-Este é um projeto acadêmico do curso de Engenharia de Software da FIAP.
-
-## Licença
-
-Este projeto está sob a licença MIT. Veja o arquivo `LICENSE` para mais detalhes.

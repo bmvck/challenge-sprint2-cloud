@@ -22,7 +22,7 @@ public class RegistroContabil {
 
     @Id
     @GeneratedValue(strategy = GenerationType.SEQUENCE, generator = "reg_cont_seq")
-    @SequenceGenerator(name = "reg_cont_seq", sequenceName = "REG_CONT_SEQ", allocationSize = 1)
+    @SequenceGenerator(name = "reg_cont_seq", sequenceName = "reg_cont_seq", allocationSize = 1)
     @Column(name = "id_reg_cont")
     private Long id;
 
@@ -33,12 +33,12 @@ public class RegistroContabil {
 
     @NotNull
     @ManyToOne(fetch = FetchType.LAZY)
-    @JoinColumn(name = "CONTA_id_conta", nullable = false)
+    @JoinColumn(name = "conta_id_conta", nullable = false)
     private Conta conta;
 
     @NotNull
     @ManyToOne(fetch = FetchType.LAZY)
-    @JoinColumn(name = "CENTRO_CUSTO_id_centro_custo", nullable = false)
+    @JoinColumn(name = "centro_custo_id_centro_custo", nullable = false)
     private CentroCusto centroCusto;
 
     @Column(name = "data_criacao")

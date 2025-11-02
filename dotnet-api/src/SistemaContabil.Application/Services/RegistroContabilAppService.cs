@@ -11,11 +11,13 @@ namespace SistemaContabil.Application.Services;
 public class RegistroContabilAppService : IRegistroContabilAppService
 {
     private readonly IRegistroContabilService _registroService;
+    private readonly IRegistroContabilRepository _repository;
     private readonly IMapper _mapper;
 
-    public RegistroContabilAppService(IRegistroContabilService registroService, IMapper mapper)
+    public RegistroContabilAppService(IRegistroContabilService registroService, IRegistroContabilRepository repository, IMapper mapper)
     {
         _registroService = registroService;
+        _repository = repository;
         _mapper = mapper;
     }
 
@@ -49,11 +51,11 @@ public class RegistroContabilAppService : IRegistroContabilAppService
         if (filtro.CentroCustoId.HasValue)
             registros = registros.Where(r => r.CentroCustoIdCentroCusto == filtro.CentroCustoId.Value);
             
-        if (filtro.ValorMinimo.HasValue)
-            registros = registros.Where(r => r.Valor >= filtro.ValorMinimo.Value);
+        if (filtro.ValorMin.HasValue)
+            registros = registros.Where(r => r.Valor >= filtro.ValorMin.Value);
             
-        if (filtro.ValorMaximo.HasValue)
-            registros = registros.Where(r => r.Valor <= filtro.ValorMaximo.Value);
+        if (filtro.ValorMax.HasValue)
+            registros = registros.Where(r => r.Valor <= filtro.ValorMax.Value);
             
         return _mapper.Map<IEnumerable<RegistroContabilDto>>(registros);
     }
@@ -126,11 +128,11 @@ public class RegistroContabilAppService : IRegistroContabilAppService
         if (filtro.CentroCustoId.HasValue)
             registros = registros.Where(r => r.CentroCustoIdCentroCusto == filtro.CentroCustoId.Value);
             
-        if (filtro.ValorMinimo.HasValue)
-            registros = registros.Where(r => r.Valor >= filtro.ValorMinimo.Value);
+        if (filtro.ValorMin.HasValue)
+            registros = registros.Where(r => r.Valor >= filtro.ValorMin.Value);
             
-        if (filtro.ValorMaximo.HasValue)
-            registros = registros.Where(r => r.Valor <= filtro.ValorMaximo.Value);
+        if (filtro.ValorMax.HasValue)
+            registros = registros.Where(r => r.Valor <= filtro.ValorMax.Value);
             
         return _mapper.Map<IEnumerable<RegistroContabilDto>>(registros);
     }
@@ -148,5 +150,32 @@ public class RegistroContabilAppService : IRegistroContabilAppService
     public async Task<decimal> CalcularTotalPorPeriodoAsync(DateTime dataInicio, DateTime dataFim)
     {
         return await _registroService.CalcularTotalPorPeriodoAsync(dataInicio, dataFim);
+    }
+
+    public async Task<PagedResultDto<RegistroContabilDto>> SearchAsync(FiltroRegistroContabilDto filtro)
+    {
+        filtro.Validate();
+
+        var (items, totalCount) = await _repository.SearchPagedAsync(
+            valorMin: filtro.ValorMin,
+            valorMax: filtro.ValorMax,
+            contaId: filtro.ContaId,
+            centroCustoId: filtro.CentroCustoId,
+            dataInicio: filtro.DataInicio,
+            dataFim: filtro.DataFim,
+            page: filtro.Page,
+            pageSize: filtro.PageSize,
+            sortBy: filtro.SortBy,
+            isDescending: filtro.IsDescending);
+
+        var dtos = _mapper.Map<IEnumerable<RegistroContabilDto>>(items);
+
+        return new PagedResultDto<RegistroContabilDto>
+        {
+            Items = dtos,
+            Page = filtro.Page,
+            PageSize = filtro.PageSize,
+            TotalCount = totalCount
+        };
     }
 }

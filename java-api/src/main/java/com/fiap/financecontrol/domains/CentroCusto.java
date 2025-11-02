@@ -20,7 +20,7 @@ public class CentroCusto {
 
     @Id
     @GeneratedValue(strategy = GenerationType.SEQUENCE, generator = "centro_custo_seq")
-    @SequenceGenerator(name = "centro_custo_seq", sequenceName = "CENTRO_CUSTO_SEQ", allocationSize = 1)
+    @SequenceGenerator(name = "centro_custo_seq", sequenceName = "centro_custo_seq", allocationSize = 1)
     @Column(name = "id_centro_custo")
     private Long id;
 

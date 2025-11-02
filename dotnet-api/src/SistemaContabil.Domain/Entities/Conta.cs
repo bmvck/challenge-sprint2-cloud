@@ -1,31 +1,43 @@
 using System.ComponentModel.DataAnnotations;
+using System.ComponentModel.DataAnnotations.Schema;
 
 namespace SistemaContabil.Domain.Entities;
 
 /// <summary>
-/// Entidade que representa uma Conta no plano de contas
+/// Entidade que representa uma Conta Contábil no plano de contas
 /// </summary>
 public class Conta
 {
     /// <summary>
-    /// Identificador único da conta
+    /// Identificador único da conta contábil
     /// </summary>
     [Key]
-    public int IdConta { get; set; }
+    public int IdContaContabil { get; set; }
 
     /// <summary>
-    /// Nome da conta
+    /// Nome da conta contábil
     /// </summary>
     [Required]
     [StringLength(70)]
-    public string NomeConta { get; set; } = string.Empty;
+    public string NomeContaContabil { get; set; } = string.Empty;
 
     /// <summary>
-    /// Tipo da conta (D = Débito, C = Crédito)
+    /// Tipo da conta (R = Receita, D = Despesa)
     /// </summary>
     [Required]
     [StringLength(1)]
     public char Tipo { get; set; }
+
+    /// <summary>
+    /// Identificador do cliente associado (nullable)
+    /// </summary>
+    public int? ClienteIdCliente { get; set; }
+
+    /// <summary>
+    /// Cliente associado à conta (se aplicável)
+    /// </summary>
+    [ForeignKey(nameof(ClienteIdCliente))]
+    public virtual Cliente? Cliente { get; set; }
 
     /// <summary>
     /// Registros contábeis associados a esta conta
@@ -38,36 +50,36 @@ public class Conta
     /// <returns>True se válido, False caso contrário</returns>
     public bool IsValid()
     {
-        return !string.IsNullOrWhiteSpace(NomeConta) && 
-               NomeConta.Length <= 70 &&
-               (Tipo == 'D' || Tipo == 'C');
+        return !string.IsNullOrWhiteSpace(NomeContaContabil) && 
+               NomeContaContabil.Length <= 70 &&
+               (Tipo == 'R' || Tipo == 'D');
     }
 
     /// <summary>
-    /// Atualiza o nome da conta
+    /// Atualiza o nome da conta contábil
     /// </summary>
     /// <param name="novoNome">Novo nome para a conta</param>
     /// <exception cref="ArgumentException">Lançada quando o nome é inválido</exception>
     public void AtualizarNome(string novoNome)
     {
         if (string.IsNullOrWhiteSpace(novoNome))
-            throw new ArgumentException("Nome da conta não pode ser vazio", nameof(novoNome));
+            throw new ArgumentException("Nome da conta contábil não pode ser vazio", nameof(novoNome));
         
         if (novoNome.Length > 70)
-            throw new ArgumentException("Nome da conta não pode ter mais de 70 caracteres", nameof(novoNome));
+            throw new ArgumentException("Nome da conta contábil não pode ter mais de 70 caracteres", nameof(novoNome));
 
-        NomeConta = novoNome.Trim();
+        NomeContaContabil = novoNome.Trim();
     }
 
     /// <summary>
     /// Atualiza o tipo da conta
     /// </summary>
-    /// <param name="novoTipo">Novo tipo para a conta (D ou C)</param>
+    /// <param name="novoTipo">Novo tipo para a conta (R ou D)</param>
     /// <exception cref="ArgumentException">Lançada quando o tipo é inválido</exception>
     public void AtualizarTipo(char novoTipo)
     {
-        if (novoTipo != 'D' && novoTipo != 'C')
-            throw new ArgumentException("Tipo da conta deve ser 'D' (Débito) ou 'C' (Crédito)", nameof(novoTipo));
+        if (novoTipo != 'R' && novoTipo != 'D')
+            throw new ArgumentException("Tipo da conta deve ser 'R' (Receita) ou 'D' (Despesa)", nameof(novoTipo));
 
         Tipo = novoTipo;
     }
@@ -78,6 +90,6 @@ public class Conta
     /// <returns>Descrição do tipo da conta</returns>
     public string GetTipoDescricao()
     {
-        return Tipo == 'D' ? "Débito" : "Crédito";
+        return Tipo == 'R' ? "Receita" : "Despesa";
     }
 }

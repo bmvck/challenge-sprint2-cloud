@@ -42,6 +42,16 @@ public interface ICentroCustoRepository : IRepository<CentroCusto>
     /// <returns>Centro de custo com registros ou null</returns>
     Task<CentroCusto?> GetWithRegistrosAsync(int id);
 
+    /// <summary>
+    /// Busca paginada de centros de custo com filtros
+    /// </summary>
+    Task<(IEnumerable<CentroCusto> Items, int TotalCount)> SearchPagedAsync(
+        string? nome = null,
+        int page = 1,
+        int pageSize = 10,
+        string? sortBy = null,
+        bool isDescending = false);
+
     // Métodos adicionais para compatibilidade com serviços de domínio
     Task<CentroCusto?> ObterPorIdAsync(int id);
     Task<IEnumerable<CentroCusto>> ObterTodosAsync();

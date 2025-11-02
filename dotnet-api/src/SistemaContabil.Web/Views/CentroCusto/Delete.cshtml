@@ -1,0 +1,40 @@
+@model CentroCustoDto
+@{
+    ViewData["Title"] = "Excluir Centro de Custo";
+}
+
+<div class="row">
+    <div class="col-md-6 offset-md-3">
+        <div class="card shadow border-danger">
+            <div class="card-header bg-danger text-white">
+                <h4 class="mb-0"><i class="bi bi-exclamation-triangle"></i> Confirmar Exclusão</h4>
+            </div>
+            <div class="card-body">
+                <p class="alert alert-warning">
+                    <i class="bi bi-exclamation-triangle-fill"></i> 
+                    Tem certeza que deseja excluir este centro de custo?
+                </p>
+
+                <dl class="row">
+                    <dt class="col-sm-4">ID:</dt>
+                    <dd class="col-sm-8">@Model.IdCentroCusto</dd>
+
+                    <dt class="col-sm-4">Nome:</dt>
+                    <dd class="col-sm-8">@Model.NomeCentroCusto</dd>
+                </dl>
+
+                <form asp-action="Delete" method="post" class="mt-4">
+                    <input type="hidden" asp-for="@Model.IdCentroCusto" />
+                    <div class="d-grid gap-2 d-md-flex justify-content-md-end">
+                        <a href="@Url.Action("Index")" class="btn btn-secondary">
+                            <i class="bi bi-arrow-left"></i> Cancelar
+                        </a>
+                        <button type="submit" class="btn btn-danger">
+                            <i class="bi bi-trash"></i> Confirmar Exclusão
+                        </button>
+                    </div>
+                </form>
+            </div>
+        </div>
+    </div>
+</div>

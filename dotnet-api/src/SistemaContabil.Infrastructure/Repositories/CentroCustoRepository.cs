@@ -75,6 +75,11 @@ public class CentroCustoRepository : Repository<CentroCusto>, ICentroCustoReposi
 
     public async Task<CentroCusto> AdicionarAsync(CentroCusto entity)
     {
+        // Gerar ID usando a sequência antes de inserir
+        if (entity.IdCentroCusto == 0)
+        {
+            entity.IdCentroCusto = await GetNextSequenceValueAsync("centro_custo_seq");
+        }
         return await AddAsync(entity);
     }
 
@@ -86,5 +91,49 @@ public class CentroCustoRepository : Repository<CentroCusto>, ICentroCustoReposi
     public async Task<bool> RemoverAsync(int id)
     {
         return await RemoveByIdAsync(id);
+    }
+
+    public async Task<(IEnumerable<CentroCusto> Items, int TotalCount)> SearchPagedAsync(
+        string? nome = null,
+        int page = 1,
+        int pageSize = 10,
+        string? sortBy = null,
+        bool isDescending = false)
+    {
+        var query = _dbSet.AsQueryable();
+
+        // Aplicar filtros
+        if (!string.IsNullOrWhiteSpace(nome))
+        {
+            query = query.Where(cc => cc.NomeCentroCusto.Contains(nome));
+        }
+
+        // Contar total
+        var totalCount = await query.CountAsync();
+
+        // Aplicar ordenação
+        query = ApplySorting(query, sortBy, isDescending);
+
+        // Aplicar paginação
+        var items = await query
+            .Skip((page - 1) * pageSize)
+            .Take(pageSize)
+            .ToListAsync();
+
+        return (items, totalCount);
+    }
+
+    private IQueryable<CentroCusto> ApplySorting(IQueryable<CentroCusto> query, string? sortBy, bool isDescending)
+    {
+        return sortBy?.ToLowerInvariant() switch
+        {
+            "nome" or "nomecentrocusto" => isDescending
+                ? query.OrderByDescending(cc => cc.NomeCentroCusto)
+                : query.OrderBy(cc => cc.NomeCentroCusto),
+            "id" or "idcentrocusto" => isDescending
+                ? query.OrderByDescending(cc => cc.IdCentroCusto)
+                : query.OrderBy(cc => cc.IdCentroCusto),
+            _ => query.OrderBy(cc => cc.NomeCentroCusto)
+        };
     }
 }

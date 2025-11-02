@@ -10,9 +10,14 @@ import jakarta.validation.Valid;
 import lombok.RequiredArgsConstructor;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Sort;
+import org.springframework.hateoas.EntityModel;
+import org.springframework.hateoas.PagedModel;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
+
+import static org.springframework.hateoas.server.mvc.WebMvcLinkBuilder.linkTo;
+import static org.springframework.hateoas.server.mvc.WebMvcLinkBuilder.methodOn;
 
 @RestController
 @RequestMapping("/fiap/contas")
@@ -26,13 +31,16 @@ public class ContaController {
     private final DeleteContaService deleteContaService;
 
     @GetMapping("/{id}")
-    public ResponseEntity<ContaResponseDto> getConta(@PathVariable Long id) {
+    public ResponseEntity<EntityModel<ContaResponseDto>> getConta(@PathVariable Long id) {
         Conta conta = findByIdContaService.executeOrThrow(id);
-        return ResponseEntity.ok(ContaResponseDto.fromEntity(conta));
+        ContaResponseDto dto = ContaResponseDto.fromEntity(conta);
+        EntityModel<ContaResponseDto> model = EntityModel.of(dto);
+        addLinksToConta(model, id, dto.getClienteId());
+        return ResponseEntity.ok(model);
     }
 
     @GetMapping
-    public ResponseEntity<Page<ContaResponseDto>> getContas(
+    public ResponseEntity<PagedModel<EntityModel<ContaResponseDto>>> getContas(
             @RequestParam(defaultValue = "0") int page,
             @RequestParam(defaultValue = "ASC") Sort.Direction direction,
             @RequestParam(defaultValue = "10") int size,
@@ -53,42 +61,84 @@ public class ContaController {
 
         if (contas.isEmpty()) {
             return ResponseEntity.noContent().build();
-        } else {
-            return ResponseEntity.ok(response);
         }
+
+        PagedModel.PageMetadata pageMetadata = new PagedModel.PageMetadata(
+                contas.getSize(),
+                contas.getNumber(),
+                contas.getTotalElements(),
+                contas.getTotalPages()
+        );
+
+        PagedModel<EntityModel<ContaResponseDto>> pagedModel = PagedModel.of(
+                response.map(dto -> {
+                    EntityModel<ContaResponseDto> model = EntityModel.of(dto);
+                    addLinksToConta(model, dto.getId(), dto.getClienteId());
+                    return model;
+                }).toList(),
+                pageMetadata
+        );
+
+        // Links de navegação
+        pagedModel.add(linkTo(methodOn(ContaController.class).getContas(0, direction, size, tipo, nome)).withRel("first"));
+        if (contas.hasPrevious()) {
+            pagedModel.add(linkTo(methodOn(ContaController.class).getContas(contas.getNumber() - 1, direction, size, tipo, nome)).withRel("prev"));
+        }
+        pagedModel.add(linkTo(methodOn(ContaController.class).getContas(contas.getNumber(), direction, size, tipo, nome)).withSelfRel());
+        if (contas.hasNext()) {
+            pagedModel.add(linkTo(methodOn(ContaController.class).getContas(contas.getNumber() + 1, direction, size, tipo, nome)).withRel("next"));
+        }
+        pagedModel.add(linkTo(methodOn(ContaController.class).getContas(contas.getTotalPages() - 1, direction, size, tipo, nome)).withRel("last"));
+
+        return ResponseEntity.ok(pagedModel);
     }
 
     @PostMapping
-    @ResponseStatus(HttpStatus.CREATED)
-    public ContaResponseDto createConta(@RequestBody @Valid ContaRequestDto contaDto) {
+    public ResponseEntity<EntityModel<ContaResponseDto>> createConta(@RequestBody @Valid ContaRequestDto contaDto) {
         Conta conta = contaDto.toEntity();
         
-        // Se clienteId foi fornecido, criar um objeto Cliente com o ID
         if (contaDto.getClienteId() != null) {
             conta.setCliente(Cliente.builder().id(contaDto.getClienteId()).build());
         }
         
         Conta contaCriada = createContaService.execute(conta);
-        return ContaResponseDto.fromEntity(contaCriada);
+        ContaResponseDto dto = ContaResponseDto.fromEntity(contaCriada);
+        EntityModel<ContaResponseDto> model = EntityModel.of(dto);
+        addLinksToConta(model, contaCriada.getId(), dto.getClienteId());
+        return ResponseEntity.status(HttpStatus.CREATED)
+                .location(linkTo(methodOn(ContaController.class).getConta(contaCriada.getId())).toUri())
+                .body(model);
     }
 
     @PutMapping("/{id}")
-    public ContaResponseDto updateConta(@PathVariable Long id, @RequestBody @Valid ContaRequestDto contaDto) {
+    public ResponseEntity<EntityModel<ContaResponseDto>> updateConta(@PathVariable Long id, @RequestBody @Valid ContaRequestDto contaDto) {
         Conta conta = contaDto.toEntity();
         conta.setId(id);
         
-        // Se clienteId foi fornecido, criar um objeto Cliente com o ID
         if (contaDto.getClienteId() != null) {
             conta.setCliente(Cliente.builder().id(contaDto.getClienteId()).build());
         }
         
         Conta contaAtualizada = updateContaService.execute(conta);
-        return ContaResponseDto.fromEntity(contaAtualizada);
+        ContaResponseDto dto = ContaResponseDto.fromEntity(contaAtualizada);
+        EntityModel<ContaResponseDto> model = EntityModel.of(dto);
+        addLinksToConta(model, id, dto.getClienteId());
+        return ResponseEntity.ok(model);
     }
 
     @DeleteMapping("/{id}")
     @ResponseStatus(HttpStatus.NO_CONTENT)
     public void deleteConta(@PathVariable Long id) {
         deleteContaService.execute(id);
+    }
+
+    private void addLinksToConta(EntityModel<ContaResponseDto> model, Long id, Long clienteId) {
+        model.add(linkTo(methodOn(ContaController.class).getConta(id)).withSelfRel());
+        model.add(linkTo(methodOn(ContaController.class).updateConta(id, null)).withRel("update"));
+        model.add(linkTo(ContaController.class).slash(id).withRel("delete"));
+        if (clienteId != null) {
+            model.add(linkTo(methodOn(ClienteController.class).getCliente(clienteId)).withRel("cliente"));
+        }
+        model.add(linkTo(methodOn(RegistroContabilController.class).getRegistrosContabeis(0, Sort.Direction.ASC, 10, id, null, null, null)).withRel("registros-contabeis"));
     }
 }

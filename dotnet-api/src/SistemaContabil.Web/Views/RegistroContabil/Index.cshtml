@@ -1,0 +1,64 @@
+@model IEnumerable<RegistroContabilDto>
+@{
+    ViewData["Title"] = "Registros Contábeis";
+}
+
+<div class="d-flex justify-content-between align-items-center mb-4">
+    <h2><i class="bi bi-receipt"></i> Registros Contábeis</h2>
+    <a href="@Url.Action("Create")" class="btn btn-warning">
+        <i class="bi bi-plus-circle"></i> Novo Registro Contábil
+    </a>
+</div>
+
+@if (Model != null && Model.Any())
+{
+    <div class="table-responsive">
+        <table class="table table-striped table-hover">
+            <thead class="table-dark">
+                <tr>
+                    <th>ID</th>
+                    <th>Valor</th>
+                    <th>Conta</th>
+                    <th>Centro de Custo</th>
+                    <th>Data Criação</th>
+                    <th>Ações</th>
+                </tr>
+            </thead>
+            <tbody>
+                @foreach (var item in Model)
+                {
+                    <tr>
+                        <td>@item.IdRegCont</td>
+                        <td>@item.Valor.ToString("C")</td>
+                        <td>@item.NomeConta</td>
+                        <td>@item.NomeCentroCusto</td>
+                        <td>@item.DataCriacao.ToString("dd/MM/yyyy HH:mm")</td>
+                        <td>
+                            <div class="btn-group" role="group">
+                                <a href="@Url.Action("Details", new { id = item.IdRegCont })" 
+                                   class="btn btn-sm btn-info" title="Detalhes">
+                                    <i class="bi bi-eye"></i>
+                                </a>
+                                <a href="@Url.Action("Edit", new { id = item.IdRegCont })" 
+                                   class="btn btn-sm btn-warning" title="Editar">
+                                    <i class="bi bi-pencil"></i>
+                                </a>
+                                <a href="@Url.Action("Delete", new { id = item.IdRegCont })" 
+                                   class="btn btn-sm btn-danger" title="Excluir">
+                                    <i class="bi bi-trash"></i>
+                                </a>
+                            </div>
+                        </td>
+                    </tr>
+                }
+            </tbody>
+        </table>
+    </div>
+}
+else
+{
+    <div class="alert alert-info">
+        <i class="bi bi-info-circle"></i> Nenhum registro contábil cadastrado. 
+        <a href="@Url.Action("Create")" class="alert-link">Clique aqui para criar o primeiro.</a>
+    </div>
+}

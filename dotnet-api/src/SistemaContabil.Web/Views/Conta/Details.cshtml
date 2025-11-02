@@ -1,0 +1,47 @@
+@model ContaDto
+@{
+    ViewData["Title"] = "Detalhes da Conta Contábil";
+}
+
+<div class="row">
+    <div class="col-md-6 offset-md-3">
+        <div class="card shadow">
+            <div class="card-header bg-info text-white">
+                <h4 class="mb-0"><i class="bi bi-eye"></i> Detalhes da Conta Contábil</h4>
+            </div>
+            <div class="card-body">
+                <dl class="row">
+                    <dt class="col-sm-4">ID:</dt>
+                    <dd class="col-sm-8">@Model.IdContaContabil</dd>
+
+                    <dt class="col-sm-4">Nome:</dt>
+                    <dd class="col-sm-8">@Model.NomeContaContabil</dd>
+
+                    <dt class="col-sm-4">Tipo:</dt>
+                    <dd class="col-sm-8">
+                        @if (Model.Tipo == 'R')
+                        {
+                            <span class="badge bg-success">@Model.Tipo - Receita</span>
+                        }
+                        else
+                        {
+                            <span class="badge bg-danger">@Model.Tipo - Despesa</span>
+                        }
+                    </dd>
+
+                    <dt class="col-sm-4">Quantidade de Registros:</dt>
+                    <dd class="col-sm-8">@Model.QuantidadeRegistros</dd>
+                </dl>
+
+                <div class="d-grid gap-2 d-md-flex justify-content-md-end mt-4">
+                    <a href="@Url.Action("Index")" class="btn btn-secondary">
+                        <i class="bi bi-arrow-left"></i> Voltar
+                    </a>
+                    <a href="@Url.Action("Edit", new { id = Model.IdContaContabil })" class="btn btn-warning">
+                        <i class="bi bi-pencil"></i> Editar
+                    </a>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>

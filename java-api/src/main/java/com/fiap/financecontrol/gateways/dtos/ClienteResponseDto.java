@@ -2,11 +2,14 @@ package com.fiap.financecontrol.gateways.dtos;
 
 import com.fiap.financecontrol.domains.Cliente;
 import lombok.Data;
+import lombok.EqualsAndHashCode;
+import org.springframework.hateoas.RepresentationModel;
 
 import java.time.LocalDateTime;
 
 @Data
-public class ClienteResponseDto {
+@EqualsAndHashCode(callSuper = false)
+public class ClienteResponseDto extends RepresentationModel<ClienteResponseDto> {
 
     private Long id;
     private String nomeCliente;

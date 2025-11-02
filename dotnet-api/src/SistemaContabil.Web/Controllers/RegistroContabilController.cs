@@ -71,7 +71,7 @@ public class RegistroContabilController : ControllerBase
                 return BadRequest(ModelState);
 
             var registro = await _registroService.CriarAsync(dto);
-            return CreatedAtAction(nameof(ObterPorId), new { id = registro.IdRegistroContabil }, registro);
+            return CreatedAtAction(nameof(ObterPorId), new { id = registro.IdRegCont }, registro);
         }
         catch (ArgumentException ex)
         {

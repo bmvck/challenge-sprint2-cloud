@@ -1,0 +1,44 @@
+@model VendasDto
+@{
+    ViewData["Title"] = "Detalhes da Venda";
+}
+
+<div class="row">
+    <div class="col-md-8 offset-md-2">
+        <div class="card shadow">
+            <div class="card-header bg-info text-white">
+                <h4 class="mb-0"><i class="bi bi-eye"></i> Detalhes da Venda</h4>
+            </div>
+            <div class="card-body">
+                <dl class="row">
+                    <dt class="col-sm-4">ID:</dt>
+                    <dd class="col-sm-8">@Model.IdVendas</dd>
+
+                    <dt class="col-sm-4">Cliente:</dt>
+                    <dd class="col-sm-8">@Model.NomeCliente</dd>
+
+                    <dt class="col-sm-4">Registro Contábil:</dt>
+                    <dd class="col-sm-8">#@Model.RegContIdRegCont</dd>
+
+                    <dt class="col-sm-4">Valor:</dt>
+                    <dd class="col-sm-8"><strong>@Model.Valor.ToString("C")</strong></dd>
+
+                    @if (Model.VendaEventoIdEvento.HasValue)
+                    {
+                        <dt class="col-sm-4">ID Evento:</dt>
+                        <dd class="col-sm-8">@Model.VendaEventoIdEvento.Value</dd>
+                    }
+                </dl>
+
+                <div class="d-grid gap-2 d-md-flex justify-content-md-end mt-4">
+                    <a href="@Url.Action("Index")" class="btn btn-secondary">
+                        <i class="bi bi-arrow-left"></i> Voltar
+                    </a>
+                    <a href="@Url.Action("Edit", new { id = Model.IdVendas })" class="btn btn-warning">
+                        <i class="bi bi-pencil"></i> Editar
+                    </a>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>

@@ -11,7 +11,7 @@ public interface IContaService
     /// Cria uma nova conta
     /// </summary>
     /// <param name="nome">Nome da conta</param>
-    /// <param name="tipo">Tipo da conta (D ou C)</param>
+    /// <param name="tipo">Tipo da conta (R ou D)</param>
     /// <returns>Conta criada</returns>
     /// <exception cref="ArgumentException">Lançada quando dados são inválidos</exception>
     Task<Conta> CriarAsync(string nome, char tipo);
@@ -51,7 +51,7 @@ public interface IContaService
     /// <summary>
     /// Obtém contas por tipo
     /// </summary>
-    /// <param name="tipo">Tipo da conta (D ou C)</param>
+    /// <param name="tipo">Tipo da conta (R ou D)</param>
     /// <returns>Lista de contas do tipo especificado</returns>
     Task<IEnumerable<Conta>> ObterPorTipoAsync(char tipo);
 
@@ -63,16 +63,16 @@ public interface IContaService
     Task<IEnumerable<Conta>> BuscarPorNomeAsync(string nome);
 
     /// <summary>
-    /// Obtém contas de débito
+    /// Obtém contas de receita
     /// </summary>
-    /// <returns>Lista de contas de débito</returns>
-    Task<IEnumerable<Conta>> ObterContasDebitoAsync();
+    /// <returns>Lista de contas de receita</returns>
+    Task<IEnumerable<Conta>> ObterContasReceitaAsync();
 
     /// <summary>
-    /// Obtém contas de crédito
+    /// Obtém contas de despesa
     /// </summary>
-    /// <returns>Lista de contas de crédito</returns>
-    Task<IEnumerable<Conta>> ObterContasCreditoAsync();
+    /// <returns>Lista de contas de despesa</returns>
+    Task<IEnumerable<Conta>> ObterContasDespesaAsync();
 
     /// <summary>
     /// Verifica se uma conta pode ser removida

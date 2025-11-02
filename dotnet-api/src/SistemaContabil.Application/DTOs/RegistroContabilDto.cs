@@ -10,7 +10,7 @@ public class RegistroContabilDto
     /// <summary>
     /// Identificador único do registro contábil
     /// </summary>
-    public int IdRegistroContabil { get; set; }
+    public int IdRegCont { get; set; }
 
     /// <summary>
     /// Valor do registro contábil
@@ -110,7 +110,7 @@ public class RegistroContabilDetalhesDto
     /// <summary>
     /// Identificador único do registro contábil
     /// </summary>
-    public int IdRegistroContabil { get; set; }
+    public int IdRegCont { get; set; }
 
     /// <summary>
     /// Valor do registro contábil
@@ -138,48 +138,3 @@ public class RegistroContabilDetalhesDto
     public CentroCustoDto CentroCusto { get; set; } = new();
 }
 
-/// <summary>
-/// DTO para filtros de busca de Registro Contábil
-/// </summary>
-public class FiltroRegistroContabilDto
-{
-    /// <summary>
-    /// ID da conta para filtrar
-    /// </summary>
-    public int? ContaId { get; set; }
-
-    /// <summary>
-    /// ID do centro de custo para filtrar
-    /// </summary>
-    public int? CentroCustoId { get; set; }
-
-    /// <summary>
-    /// Data de início do período
-    /// </summary>
-    public DateTime? DataInicio { get; set; }
-
-    /// <summary>
-    /// Data de fim do período
-    /// </summary>
-    public DateTime? DataFim { get; set; }
-
-    /// <summary>
-    /// Valor mínimo
-    /// </summary>
-    public decimal? ValorMinimo { get; set; }
-
-    /// <summary>
-    /// Valor máximo
-    /// </summary>
-    public decimal? ValorMaximo { get; set; }
-
-    /// <summary>
-    /// Ordenação por campo
-    /// </summary>
-    public string? OrdenarPor { get; set; }
-
-    /// <summary>
-    /// Direção da ordenação (asc/desc)
-    /// </summary>
-    public string? DirecaoOrdenacao { get; set; } = "asc";
-}

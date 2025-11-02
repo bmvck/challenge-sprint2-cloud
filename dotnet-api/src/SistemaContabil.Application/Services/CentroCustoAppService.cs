@@ -11,11 +11,13 @@ namespace SistemaContabil.Application.Services;
 public class CentroCustoAppService : ICentroCustoAppService
 {
     private readonly ICentroCustoService _centroCustoService;
+    private readonly ICentroCustoRepository _repository;
     private readonly IMapper _mapper;
 
-    public CentroCustoAppService(ICentroCustoService centroCustoService, IMapper mapper)
+    public CentroCustoAppService(ICentroCustoService centroCustoService, ICentroCustoRepository repository, IMapper mapper)
     {
         _centroCustoService = centroCustoService;
+        _repository = repository;
         _mapper = mapper;
     }
 
@@ -69,5 +71,27 @@ public class CentroCustoAppService : ICentroCustoAppService
     {
         var centrosCusto = await _centroCustoService.ObterComRegistrosAsync();
         return _mapper.Map<IEnumerable<CentroCustoDto>>(centrosCusto);
+    }
+
+    public async Task<PagedResultDto<CentroCustoDto>> SearchAsync(FiltroCentroCustoDto filtro)
+    {
+        filtro.Validate();
+
+        var (items, totalCount) = await _repository.SearchPagedAsync(
+            nome: filtro.Nome,
+            page: filtro.Page,
+            pageSize: filtro.PageSize,
+            sortBy: filtro.SortBy,
+            isDescending: filtro.IsDescending);
+
+        var dtos = _mapper.Map<IEnumerable<CentroCustoDto>>(items);
+
+        return new PagedResultDto<CentroCustoDto>
+        {
+            Items = dtos,
+            Page = filtro.Page,
+            PageSize = filtro.PageSize,
+            TotalCount = totalCount
+        };
     }
 }

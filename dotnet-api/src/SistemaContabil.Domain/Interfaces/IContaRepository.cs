@@ -49,17 +49,30 @@ public interface IContaRepository : IRepository<Conta>
     /// <returns>Conta com registros ou null</returns>
     Task<Conta?> GetWithRegistrosAsync(int id);
 
-    /// <summary>
-    /// Obtém contas de débito
-    /// </summary>
-    /// <returns>Lista de contas de débito</returns>
-    Task<IEnumerable<Conta>> GetContasDebitoAsync();
 
     /// <summary>
-    /// Obtém contas de crédito
+    /// Obtém contas de receita
     /// </summary>
-    /// <returns>Lista de contas de crédito</returns>
-    Task<IEnumerable<Conta>> GetContasCreditoAsync();
+    /// <returns>Lista de contas de receita</returns>
+    Task<IEnumerable<Conta>> GetContasReceitaAsync();
+
+    /// <summary>
+    /// Obtém contas de despesa
+    /// </summary>
+    /// <returns>Lista de contas de despesa</returns>
+    Task<IEnumerable<Conta>> GetContasDespesaAsync();
+
+    /// <summary>
+    /// Busca paginada de contas com filtros
+    /// </summary>
+    Task<(IEnumerable<Conta> Items, int TotalCount)> SearchPagedAsync(
+        string? nome = null,
+        char? tipo = null,
+        int? clienteId = null,
+        int page = 1,
+        int pageSize = 10,
+        string? sortBy = null,
+        bool isDescending = false);
 
     // Métodos adicionais para compatibilidade com serviços de domínio
     Task<Conta?> ObterPorIdAsync(int id);
@@ -69,7 +82,7 @@ public interface IContaRepository : IRepository<Conta>
     Task<Conta> AtualizarAsync(Conta entity);
     Task<bool> RemoverAsync(int id);
     Task<IEnumerable<Conta>> ObterPorTipoAsync(char tipo);
-    Task<IEnumerable<Conta>> ObterContasDebitoAsync();
-    Task<IEnumerable<Conta>> ObterContasCreditoAsync();
+    Task<IEnumerable<Conta>> ObterContasReceitaAsync();
+    Task<IEnumerable<Conta>> ObterContasDespesaAsync();
     Task<IEnumerable<Conta>> ObterComRegistrosAsync();
 }

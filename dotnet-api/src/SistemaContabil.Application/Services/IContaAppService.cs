@@ -45,7 +45,7 @@ public interface IContaAppService
     /// <summary>
     /// Obtém contas por tipo
     /// </summary>
-    /// <param name="tipo">Tipo da conta (D ou C)</param>
+    /// <param name="tipo">Tipo da conta (R ou D)</param>
     /// <returns>Lista de contas do tipo especificado</returns>
     Task<IEnumerable<ContaDto>> ObterPorTipoAsync(char tipo);
 
@@ -64,16 +64,21 @@ public interface IContaAppService
     Task<ContaDetalhesDto?> ObterDetalhesAsync(int id);
 
     /// <summary>
-    /// Obtém contas de débito
+    /// Obtém contas de receita
     /// </summary>
-    /// <returns>Lista de contas de débito</returns>
-    Task<IEnumerable<ContaDto>> ObterContasDebitoAsync();
+    /// <returns>Lista de contas de receita</returns>
+    Task<IEnumerable<ContaDto>> ObterContasReceitaAsync();
 
     /// <summary>
-    /// Obtém contas de crédito
+    /// Obtém contas de despesa
     /// </summary>
-    /// <returns>Lista de contas de crédito</returns>
-    Task<IEnumerable<ContaDto>> ObterContasCreditoAsync();
+    /// <returns>Lista de contas de despesa</returns>
+    Task<IEnumerable<ContaDto>> ObterContasDespesaAsync();
+
+    /// <summary>
+    /// Busca paginada de contas
+    /// </summary>
+    Task<PagedResultDto<ContaDto>> SearchAsync(FiltroContaDto filtro);
 
     /// <summary>
     /// Obtém contas com registros contábeis

@@ -1,0 +1,46 @@
+@model RegistroContabilDto
+@{
+    ViewData["Title"] = "Excluir Registro Contábil";
+}
+
+<div class="row">
+    <div class="col-md-8 offset-md-2">
+        <div class="card shadow border-danger">
+            <div class="card-header bg-danger text-white">
+                <h4 class="mb-0"><i class="bi bi-exclamation-triangle"></i> Confirmar Exclusão</h4>
+            </div>
+            <div class="card-body">
+                <p class="alert alert-warning">
+                    <i class="bi bi-exclamation-triangle-fill"></i> 
+                    Tem certeza que deseja excluir este registro contábil?
+                </p>
+
+                <dl class="row">
+                    <dt class="col-sm-4">ID:</dt>
+                    <dd class="col-sm-8">@Model.IdRegCont</dd>
+
+                    <dt class="col-sm-4">Valor:</dt>
+                    <dd class="col-sm-8"><strong>@Model.Valor.ToString("C")</strong></dd>
+
+                    <dt class="col-sm-4">Conta:</dt>
+                    <dd class="col-sm-8">@Model.NomeConta</dd>
+
+                    <dt class="col-sm-4">Centro de Custo:</dt>
+                    <dd class="col-sm-8">@Model.NomeCentroCusto</dd>
+                </dl>
+
+                <form asp-action="Delete" method="post" class="mt-4">
+                    <input type="hidden" asp-for="@Model.IdRegCont" />
+                    <div class="d-grid gap-2 d-md-flex justify-content-md-end">
+                        <a href="@Url.Action("Index")" class="btn btn-secondary">
+                            <i class="bi bi-arrow-left"></i> Cancelar
+                        </a>
+                        <button type="submit" class="btn btn-danger">
+                            <i class="bi bi-trash"></i> Confirmar Exclusão
+                        </button>
+                    </div>
+                </form>
+            </div>
+        </div>
+    </div>
+</div>

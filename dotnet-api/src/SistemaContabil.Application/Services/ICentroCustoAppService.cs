@@ -68,4 +68,9 @@ public interface ICentroCustoAppService
     /// <param name="id">ID do centro de custo</param>
     /// <returns>True se pode ser removido</returns>
     Task<bool> PodeSerRemovidoAsync(int id);
+
+    /// <summary>
+    /// Busca paginada de centros de custo
+    /// </summary>
+    Task<PagedResultDto<CentroCustoDto>> SearchAsync(FiltroCentroCustoDto filtro);
 }

@@ -1,0 +1,12 @@
+services:
+  oracledb:
+    environment:
+      ORACLE_PWD: "System#2025"
+      ORACLE_SID: "FREE"
+      ORACLE_PDB: "FREEPDB1"
+      ORACLE_MEMORY: "2048"
+    volumes:
+      - ./db_init:/opt/oracle/scripts/startup
+    ports:
+      - "1521:1521"
+      - "5500:5500"

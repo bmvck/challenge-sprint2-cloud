@@ -1,0 +1,52 @@
+@model CriarContaDto
+@{
+    ViewData["Title"] = "Nova Conta Contábil";
+}
+
+<div class="row">
+    <div class="col-md-6 offset-md-3">
+        <div class="card shadow">
+            <div class="card-header bg-success text-white">
+                <h4 class="mb-0"><i class="bi bi-plus-circle"></i> Nova Conta Contábil</h4>
+            </div>
+            <div class="card-body">
+                <form asp-action="Create" method="post">
+                    <div asp-validation-summary="ModelOnly" class="text-danger mb-3"></div>
+                    
+                    <div class="mb-3">
+                        <label asp-for="NomeContaContabil" class="form-label"></label>
+                        <input asp-for="NomeContaContabil" class="form-control" 
+                               placeholder="Digite o nome da conta contábil" maxlength="70" />
+                        <span asp-validation-for="NomeContaContabil" class="text-danger"></span>
+                    </div>
+
+                    <div class="mb-3">
+                        <label asp-for="Tipo" class="form-label"></label>
+                        <select asp-for="Tipo" class="form-select">
+                            <option value="">Selecione o tipo</option>
+                            <option value="R">Receita (R)</option>
+                            <option value="D">Despesa (D)</option>
+                        </select>
+                        <span asp-validation-for="Tipo" class="text-danger"></span>
+                        <small class="form-text text-muted">
+                            R = Receita | D = Despesa
+                        </small>
+                    </div>
+
+                    <div class="d-grid gap-2 d-md-flex justify-content-md-end">
+                        <a href="@Url.Action("Index")" class="btn btn-secondary">
+                            <i class="bi bi-arrow-left"></i> Cancelar
+                        </a>
+                        <button type="submit" class="btn btn-success">
+                            <i class="bi bi-save"></i> Salvar
+                        </button>
+                    </div>
+                </form>
+            </div>
+        </div>
+    </div>
+</div>
+
+@section Scripts {
+    @{await Html.RenderPartialAsync("_ValidationScriptsPartial");}
+}

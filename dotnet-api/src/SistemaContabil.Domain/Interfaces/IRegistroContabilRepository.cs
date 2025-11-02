@@ -86,6 +86,21 @@ public interface IRegistroContabilRepository : IRepository<RegistroContabil>
     /// <returns>Lista de registros ordenados</returns>
     Task<IEnumerable<RegistroContabil>> GetOrderedByValorAsync(bool ascending = true);
 
+    /// <summary>
+    /// Busca paginada de registros contábeis com filtros
+    /// </summary>
+    Task<(IEnumerable<RegistroContabil> Items, int TotalCount)> SearchPagedAsync(
+        decimal? valorMin = null,
+        decimal? valorMax = null,
+        int? contaId = null,
+        int? centroCustoId = null,
+        DateTime? dataInicio = null,
+        DateTime? dataFim = null,
+        int page = 1,
+        int pageSize = 10,
+        string? sortBy = null,
+        bool isDescending = false);
+
     // Métodos adicionais para compatibilidade com serviços de domínio
     Task<RegistroContabil?> ObterPorIdAsync(int id);
     Task<IEnumerable<RegistroContabil>> ObterTodosAsync();

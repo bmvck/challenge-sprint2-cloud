@@ -68,7 +68,7 @@ public class RegistroContabilRepository : Repository<RegistroContabil>, IRegistr
         return await _dbSet
             .Include(rc => rc.Conta)
             .Include(rc => rc.CentroCusto)
-            .FirstOrDefaultAsync(rc => rc.IdRegistroContabil == id);
+            .FirstOrDefaultAsync(rc => rc.IdRegCont == id);
     }
 
     public async Task<decimal> GetTotalByContaAsync(int contaId)
@@ -175,6 +175,11 @@ public class RegistroContabilRepository : Repository<RegistroContabil>, IRegistr
 
     public async Task<RegistroContabil> AdicionarAsync(RegistroContabil entity)
     {
+        // Gerar ID usando a sequência antes de inserir
+        if (entity.IdRegCont == 0)
+        {
+            entity.IdRegCont = await GetNextSequenceValueAsync("reg_cont_seq");
+        }
         return await AddAsync(entity);
     }
 
@@ -186,5 +191,91 @@ public class RegistroContabilRepository : Repository<RegistroContabil>, IRegistr
     public async Task<bool> RemoverAsync(int id)
     {
         return await RemoveByIdAsync(id);
+    }
+
+    public async Task<(IEnumerable<RegistroContabil> Items, int TotalCount)> SearchPagedAsync(
+        decimal? valorMin = null,
+        decimal? valorMax = null,
+        int? contaId = null,
+        int? centroCustoId = null,
+        DateTime? dataInicio = null,
+        DateTime? dataFim = null,
+        int page = 1,
+        int pageSize = 10,
+        string? sortBy = null,
+        bool isDescending = false)
+    {
+        var query = _dbSet
+            .Include(rc => rc.Conta)
+            .Include(rc => rc.CentroCusto)
+            .AsQueryable();
+
+        // Aplicar filtros
+        if (valorMin.HasValue)
+        {
+            query = query.Where(rc => rc.Valor >= valorMin.Value);
+        }
+
+        if (valorMax.HasValue)
+        {
+            query = query.Where(rc => rc.Valor <= valorMax.Value);
+        }
+
+        if (contaId.HasValue)
+        {
+            query = query.Where(rc => rc.ContaIdConta == contaId.Value);
+        }
+
+        if (centroCustoId.HasValue)
+        {
+            query = query.Where(rc => rc.CentroCustoIdCentroCusto == centroCustoId.Value);
+        }
+
+        if (dataInicio.HasValue)
+        {
+            query = query.Where(rc => rc.DataCriacao >= dataInicio.Value);
+        }
+
+        if (dataFim.HasValue)
+        {
+            query = query.Where(rc => rc.DataCriacao <= dataFim.Value);
+        }
+
+        // Contar total
+        var totalCount = await query.CountAsync();
+
+        // Aplicar ordenação
+        query = ApplySorting(query, sortBy, isDescending);
+
+        // Aplicar paginação
+        var items = await query
+            .Skip((page - 1) * pageSize)
+            .Take(pageSize)
+            .ToListAsync();
+
+        return (items, totalCount);
+    }
+
+    private IQueryable<RegistroContabil> ApplySorting(IQueryable<RegistroContabil> query, string? sortBy, bool isDescending)
+    {
+        return sortBy?.ToLowerInvariant() switch
+        {
+            "valor" => isDescending
+                ? query.OrderByDescending(rc => rc.Valor)
+                : query.OrderBy(rc => rc.Valor),
+            "data" or "datacriacao" => isDescending
+                ? query.OrderByDescending(rc => rc.DataCriacao)
+                : query.OrderBy(rc => rc.DataCriacao),
+            "contaid" => isDescending
+                ? query.OrderByDescending(rc => rc.ContaIdConta)
+                : query.OrderBy(rc => rc.ContaIdConta),
+            "centrocustoid" => isDescending
+                ? query.OrderByDescending(rc => rc.CentroCustoIdCentroCusto)
+                : query.OrderBy(rc => rc.CentroCustoIdCentroCusto),
+            "id" or "idregcont" => isDescending
+                ? query.OrderByDescending(rc => rc.IdRegCont)
+                : query.OrderBy(rc => rc.IdRegCont),
+            _ => query.OrderByDescending(rc => rc.DataCriacao)
+        };
     }
 }

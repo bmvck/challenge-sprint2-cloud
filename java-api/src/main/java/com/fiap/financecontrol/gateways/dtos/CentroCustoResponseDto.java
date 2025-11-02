@@ -2,9 +2,12 @@ package com.fiap.financecontrol.gateways.dtos;
 
 import com.fiap.financecontrol.domains.CentroCusto;
 import lombok.Data;
+import lombok.EqualsAndHashCode;
+import org.springframework.hateoas.RepresentationModel;
 
 @Data
-public class CentroCustoResponseDto {
+@EqualsAndHashCode(callSuper = false)
+public class CentroCustoResponseDto extends RepresentationModel<CentroCustoResponseDto> {
 
     private Long id;
     private String nomeCentroCusto;

@@ -2,6 +2,7 @@ using Microsoft.OpenApi.Models;
 using SistemaContabil.Application.Extensions;
 using SistemaContabil.Infrastructure.Extensions;
 using SistemaContabil.Web.Middleware;
+using SistemaContabil.Web.Endpoints;
 using Serilog;
 
 var builder = WebApplication.CreateBuilder(args);
@@ -17,7 +18,14 @@ Log.Logger = new LoggerConfiguration()
 builder.Host.UseSerilog();
 
 // Add services to the container.
-builder.Services.AddControllers();
+builder.Services.AddControllersWithViews();
+builder.Services.AddControllers()
+    .AddJsonOptions(options =>
+    {
+        options.JsonSerializerOptions.Converters.Add(new System.Text.Json.Serialization.JsonStringEnumConverter());
+        // Configurar para aceitar string de 1 caractere como char
+        options.JsonSerializerOptions.NumberHandling = System.Text.Json.Serialization.JsonNumberHandling.AllowReadingFromString;
+    });
 
 // Configuração do Swagger/OpenAPI
 builder.Services.AddEndpointsApiExplorer();
@@ -89,7 +97,18 @@ app.UseHttpsRedirection();
 
 app.UseAuthorization();
 
+// Mapear rotas MVC - priorizar controllers do namespace Mvc
+app.MapControllerRoute(
+    name: "mvc",
+    pattern: "{controller=Home}/{action=Index}/{id?}",
+    defaults: null,
+    constraints: null,
+    dataTokens: new { area = (string?)null, namespaces = new[] { "SistemaContabil.Web.Controllers.Mvc", "SistemaContabil.Web.Controllers" } });
+
 app.MapControllers();
+
+// Mapear endpoints de busca paginada
+app.MapSearchEndpoints();
 
 // Health check endpoint
 app.MapGet("/health", () => Results.Ok(new { Status = "Healthy", Timestamp = DateTime.UtcNow }))

@@ -25,8 +25,8 @@ public class ContaService : IContaService
         if (nome.Length > 70)
             throw new ArgumentException("Nome da conta deve ter no máximo 70 caracteres", nameof(nome));
 
-        if (tipo != 'D' && tipo != 'C')
-            throw new ArgumentException("Tipo da conta deve ser 'D' (Débito) ou 'C' (Crédito)", nameof(tipo));
+        if (tipo != 'R' && tipo != 'D')
+            throw new ArgumentException("Tipo da conta deve ser 'R' (Receita) ou 'D' (Despesa)", nameof(tipo));
 
         // Verificar se já existe uma conta com o mesmo nome
         var existente = await _repository.BuscarPorNomeAsync(nome);
@@ -35,7 +35,7 @@ public class ContaService : IContaService
 
         var conta = new Conta
         {
-            NomeConta = nome.Trim(),
+            NomeContaContabil = nome.Trim(),
             Tipo = tipo
         };
 
@@ -50,8 +50,8 @@ public class ContaService : IContaService
         if (nome.Length > 70)
             throw new ArgumentException("Nome da conta deve ter no máximo 70 caracteres", nameof(nome));
 
-        if (tipo != 'D' && tipo != 'C')
-            throw new ArgumentException("Tipo da conta deve ser 'D' (Débito) ou 'C' (Crédito)", nameof(tipo));
+        if (tipo != 'R' && tipo != 'D')
+            throw new ArgumentException("Tipo da conta deve ser 'R' (Receita) ou 'D' (Despesa)", nameof(tipo));
 
         var conta = await _repository.ObterPorIdAsync(id);
         if (conta == null)
@@ -59,10 +59,10 @@ public class ContaService : IContaService
 
         // Verificar se já existe outra conta com o mesmo nome
         var existente = await _repository.BuscarPorNomeAsync(nome);
-        if (existente.Any(c => c.IdConta != id))
+        if (existente.Any(c => c.IdContaContabil != id))
             throw new ArgumentException("Já existe outra conta com este nome", nameof(nome));
 
-        conta.NomeConta = nome.Trim();
+        conta.NomeContaContabil = nome.Trim();
         conta.Tipo = tipo;
         return await _repository.AtualizarAsync(conta);
     }
@@ -93,8 +93,8 @@ public class ContaService : IContaService
 
     public async Task<IEnumerable<Conta>> ObterPorTipoAsync(char tipo)
     {
-        if (tipo != 'D' && tipo != 'C')
-            throw new ArgumentException("Tipo da conta deve ser 'D' (Débito) ou 'C' (Crédito)", nameof(tipo));
+        if (tipo != 'R' && tipo != 'D')
+            throw new ArgumentException("Tipo da conta deve ser 'R' (Receita) ou 'D' (Despesa)", nameof(tipo));
 
         return await _repository.ObterPorTipoAsync(tipo);
     }
@@ -107,14 +107,14 @@ public class ContaService : IContaService
         return await _repository.BuscarPorNomeAsync(nome);
     }
 
-    public async Task<IEnumerable<Conta>> ObterContasDebitoAsync()
+    public async Task<IEnumerable<Conta>> ObterContasReceitaAsync()
     {
-        return await _repository.ObterPorTipoAsync('D');
+        return await _repository.ObterContasReceitaAsync();
     }
 
-    public async Task<IEnumerable<Conta>> ObterContasCreditoAsync()
+    public async Task<IEnumerable<Conta>> ObterContasDespesaAsync()
     {
-        return await _repository.ObterPorTipoAsync('C');
+        return await _repository.ObterContasDespesaAsync();
     }
 
     public async Task<bool> PodeSerRemovidaAsync(int id)
@@ -130,7 +130,7 @@ public class ContaService : IContaService
 
         foreach (var conta in todas)
         {
-            var registros = await _registroRepository.ObterPorContaAsync(conta.IdConta);
+            var registros = await _registroRepository.ObterPorContaAsync(conta.IdContaContabil);
             if (registros.Any())
             {
                 comRegistros.Add(conta);

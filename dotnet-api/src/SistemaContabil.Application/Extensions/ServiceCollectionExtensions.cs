@@ -3,6 +3,7 @@ using Microsoft.Extensions.DependencyInjection;
 using SistemaContabil.Application.Mappings;
 using SistemaContabil.Application.Services;
 using SistemaContabil.Application.Validators;
+using SistemaContabil.Domain.Services;
 
 namespace SistemaContabil.Application.Extensions;
 
@@ -28,6 +29,12 @@ public static class ServiceCollectionExtensions
         services.AddScoped<ICentroCustoAppService, CentroCustoAppService>();
         services.AddScoped<IContaAppService, ContaAppService>();
         services.AddScoped<IRegistroContabilAppService, RegistroContabilAppService>();
+        services.AddScoped<IClienteAppService, ClienteAppService>();
+        services.AddScoped<IVendasAppService, VendasAppService>();
+
+        // Registro dos serviços de domínio
+        services.AddScoped<IClienteService, ClienteService>();
+        services.AddScoped<IVendasService, VendasService>();
 
         return services;
     }

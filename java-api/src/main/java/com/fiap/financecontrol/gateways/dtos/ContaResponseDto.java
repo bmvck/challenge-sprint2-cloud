@@ -3,9 +3,12 @@ package com.fiap.financecontrol.gateways.dtos;
 import com.fiap.financecontrol.domains.Conta;
 import com.fiap.financecontrol.domains.TipoConta;
 import lombok.Data;
+import lombok.EqualsAndHashCode;
+import org.springframework.hateoas.RepresentationModel;
 
 @Data
-public class ContaResponseDto {
+@EqualsAndHashCode(callSuper = false)
+public class ContaResponseDto extends RepresentationModel<ContaResponseDto> {
 
     private Long id;
     private String nomeConta;

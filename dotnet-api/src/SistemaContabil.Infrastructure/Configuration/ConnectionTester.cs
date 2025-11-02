@@ -20,7 +20,7 @@ public static class ConnectionTester
             try
             {
                 logger?.LogInformation("Testando conexão: {ConnectionString}", 
-                    connectionString.Replace("Password=310589;", "Password=***;"));
+                    connectionString.Replace("Password=AppPass#2025;", "Password=***;"));
 
                 using var connection = new OracleConnection(connectionString);
                 await connection.OpenAsync();
@@ -49,7 +49,7 @@ public static class ConnectionTester
         try
         {
             logger?.LogInformation("Testando conexão: {ConnectionString}", 
-                connectionString.Replace("Password=310589;", "Password=***;"));
+                connectionString.Replace("Password=AppPass#2025;", "Password=***;"));
 
             using var connection = new OracleConnection(connectionString);
             await connection.OpenAsync();

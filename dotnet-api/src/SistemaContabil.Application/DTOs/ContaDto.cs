@@ -8,23 +8,28 @@ namespace SistemaContabil.Application.DTOs;
 public class ContaDto
 {
     /// <summary>
-    /// Identificador único da conta
+    /// Identificador único da conta contábil
     /// </summary>
-    public int IdConta { get; set; }
+    public int IdContaContabil { get; set; }
 
     /// <summary>
-    /// Nome da conta
+    /// Nome da conta contábil
     /// </summary>
-    [Required(ErrorMessage = "Nome da conta é obrigatório")]
+    [Required(ErrorMessage = "Nome da conta contábil é obrigatório")]
     [StringLength(70, ErrorMessage = "Nome não pode ter mais de 70 caracteres")]
-    public string NomeConta { get; set; } = string.Empty;
+    public string NomeContaContabil { get; set; } = string.Empty;
 
     /// <summary>
-    /// Tipo da conta (D = Débito, C = Crédito)
+    /// Tipo da conta (R = Receita, D = Despesa)
     /// </summary>
     [Required(ErrorMessage = "Tipo da conta é obrigatório")]
-    [RegularExpression("^[DC]$", ErrorMessage = "Tipo deve ser 'D' (Débito) ou 'C' (Crédito)")]
+    [RegularExpression("^[RD]$", ErrorMessage = "Tipo deve ser 'R' (Receita) ou 'D' (Despesa)")]
     public char Tipo { get; set; }
+
+    /// <summary>
+    /// ID do cliente associado (opcional)
+    /// </summary>
+    public int? ClienteIdCliente { get; set; }
 
     /// <summary>
     /// Descrição do tipo da conta
@@ -48,18 +53,23 @@ public class ContaDto
 public class CriarContaDto
 {
     /// <summary>
-    /// Nome da conta
+    /// Nome da conta contábil
     /// </summary>
-    [Required(ErrorMessage = "Nome da conta é obrigatório")]
+    [Required(ErrorMessage = "Nome da conta contábil é obrigatório")]
     [StringLength(70, ErrorMessage = "Nome não pode ter mais de 70 caracteres")]
-    public string NomeConta { get; set; } = string.Empty;
+    public string NomeContaContabil { get; set; } = string.Empty;
 
     /// <summary>
-    /// Tipo da conta (D = Débito, C = Crédito)
+    /// Tipo da conta (R = Receita, D = Despesa)
     /// </summary>
     [Required(ErrorMessage = "Tipo da conta é obrigatório")]
-    [RegularExpression("^[DC]$", ErrorMessage = "Tipo deve ser 'D' (Débito) ou 'C' (Crédito)")]
+    [RegularExpression("^[RD]$", ErrorMessage = "Tipo deve ser 'R' (Receita) ou 'D' (Despesa)")]
     public char Tipo { get; set; }
+
+    /// <summary>
+    /// ID do cliente associado (opcional)
+    /// </summary>
+    public int? ClienteIdCliente { get; set; }
 }
 
 /// <summary>
@@ -68,18 +78,23 @@ public class CriarContaDto
 public class AtualizarContaDto
 {
     /// <summary>
-    /// Nome da conta
+    /// Nome da conta contábil
     /// </summary>
-    [Required(ErrorMessage = "Nome da conta é obrigatório")]
+    [Required(ErrorMessage = "Nome da conta contábil é obrigatório")]
     [StringLength(70, ErrorMessage = "Nome não pode ter mais de 70 caracteres")]
-    public string NomeConta { get; set; } = string.Empty;
+    public string NomeContaContabil { get; set; } = string.Empty;
 
     /// <summary>
-    /// Tipo da conta (D = Débito, C = Crédito)
+    /// Tipo da conta (R = Receita, D = Despesa)
     /// </summary>
     [Required(ErrorMessage = "Tipo da conta é obrigatório")]
-    [RegularExpression("^[DC]$", ErrorMessage = "Tipo deve ser 'D' (Débito) ou 'C' (Crédito)")]
+    [RegularExpression("^[RD]$", ErrorMessage = "Tipo deve ser 'R' (Receita) ou 'D' (Despesa)")]
     public char Tipo { get; set; }
+
+    /// <summary>
+    /// ID do cliente associado (opcional)
+    /// </summary>
+    public int? ClienteIdCliente { get; set; }
 }
 
 /// <summary>
@@ -88,19 +103,24 @@ public class AtualizarContaDto
 public class ContaDetalhesDto
 {
     /// <summary>
-    /// Identificador único da conta
+    /// Identificador único da conta contábil
     /// </summary>
-    public int IdConta { get; set; }
+    public int IdContaContabil { get; set; }
 
     /// <summary>
-    /// Nome da conta
+    /// Nome da conta contábil
     /// </summary>
-    public string NomeConta { get; set; } = string.Empty;
+    public string NomeContaContabil { get; set; } = string.Empty;
 
     /// <summary>
-    /// Tipo da conta (D = Débito, C = Crédito)
+    /// Tipo da conta (R = Receita, D = Despesa)
     /// </summary>
     public char Tipo { get; set; }
+
+    /// <summary>
+    /// ID do cliente associado (opcional)
+    /// </summary>
+    public int? ClienteIdCliente { get; set; }
 
     /// <summary>
     /// Descrição do tipo da conta

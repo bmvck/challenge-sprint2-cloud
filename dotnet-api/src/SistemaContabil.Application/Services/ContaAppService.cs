@@ -11,11 +11,13 @@ namespace SistemaContabil.Application.Services;
 public class ContaAppService : IContaAppService
 {
     private readonly IContaService _contaService;
+    private readonly IContaRepository _repository;
     private readonly IMapper _mapper;
 
-    public ContaAppService(IContaService contaService, IMapper mapper)
+    public ContaAppService(IContaService contaService, IContaRepository repository, IMapper mapper)
     {
         _contaService = contaService;
+        _repository = repository;
         _mapper = mapper;
     }
 
@@ -51,13 +53,13 @@ public class ContaAppService : IContaAppService
 
     public async Task<ContaDto> CriarAsync(CriarContaDto dto)
     {
-        var conta = await _contaService.CriarAsync(dto.NomeConta, dto.Tipo);
+        var conta = await _contaService.CriarAsync(dto.NomeContaContabil, dto.Tipo);
         return _mapper.Map<ContaDto>(conta);
     }
 
     public async Task<ContaDto> AtualizarAsync(int id, AtualizarContaDto dto)
     {
-        var conta = await _contaService.AtualizarAsync(id, dto.NomeConta, dto.Tipo);
+        var conta = await _contaService.AtualizarAsync(id, dto.NomeContaContabil, dto.Tipo);
         return _mapper.Map<ContaDto>(conta);
     }
 
@@ -83,15 +85,15 @@ public class ContaAppService : IContaAppService
         return _mapper.Map<IEnumerable<ContaDto>>(contas);
     }
 
-    public async Task<IEnumerable<ContaDto>> ObterContasDebitoAsync()
+    public async Task<IEnumerable<ContaDto>> ObterContasReceitaAsync()
     {
-        var contas = await _contaService.ObterContasDebitoAsync();
+        var contas = await _contaService.ObterContasReceitaAsync();
         return _mapper.Map<IEnumerable<ContaDto>>(contas);
     }
 
-    public async Task<IEnumerable<ContaDto>> ObterContasCreditoAsync()
+    public async Task<IEnumerable<ContaDto>> ObterContasDespesaAsync()
     {
-        var contas = await _contaService.ObterContasCreditoAsync();
+        var contas = await _contaService.ObterContasDespesaAsync();
         return _mapper.Map<IEnumerable<ContaDto>>(contas);
     }
 
@@ -99,5 +101,29 @@ public class ContaAppService : IContaAppService
     {
         var contas = await _contaService.ObterComRegistrosAsync();
         return _mapper.Map<IEnumerable<ContaDto>>(contas);
+    }
+
+    public async Task<PagedResultDto<ContaDto>> SearchAsync(FiltroContaDto filtro)
+    {
+        filtro.Validate();
+
+        var (items, totalCount) = await _repository.SearchPagedAsync(
+            nome: filtro.Nome,
+            tipo: filtro.Tipo,
+            clienteId: filtro.ClienteId,
+            page: filtro.Page,
+            pageSize: filtro.PageSize,
+            sortBy: filtro.SortBy,
+            isDescending: filtro.IsDescending);
+
+        var dtos = _mapper.Map<IEnumerable<ContaDto>>(items);
+
+        return new PagedResultDto<ContaDto>
+        {
+            Items = dtos,
+            Page = filtro.Page,
+            PageSize = filtro.PageSize,
+            TotalCount = totalCount
+        };
     }
 }

@@ -47,6 +47,26 @@ public class Repository<T> : IRepository<T> where T : class
         return entity;
     }
 
+    /// <summary>
+    /// Obtém o próximo valor de uma sequência Oracle
+    /// </summary>
+    protected async Task<int> GetNextSequenceValueAsync(string sequenceName)
+    {
+        var sql = $"SELECT {sequenceName}.NEXTVAL FROM DUAL";
+        var result = await _context.Database.SqlQueryRaw<int>(sql).ToListAsync();
+        return result.FirstOrDefault();
+    }
+
+    /// <summary>
+    /// Obtém o próximo valor de uma sequência Oracle (long)
+    /// </summary>
+    protected async Task<long> GetNextSequenceValueLongAsync(string sequenceName)
+    {
+        var sql = $"SELECT {sequenceName}.NEXTVAL FROM DUAL";
+        var result = await _context.Database.SqlQueryRaw<long>(sql).ToListAsync();
+        return result.FirstOrDefault();
+    }
+
     public virtual async Task<T> UpdateAsync(T entity)
     {
         _dbSet.Update(entity);

@@ -71,7 +71,7 @@ public class ContaController : ControllerBase
                 return BadRequest(ModelState);
 
             var conta = await _contaService.CriarAsync(dto);
-            return CreatedAtAction(nameof(ObterPorId), new { id = conta.IdConta }, conta);
+            return CreatedAtAction(nameof(ObterPorId), new { id = conta.IdContaContabil }, conta);
         }
         catch (ArgumentException ex)
         {

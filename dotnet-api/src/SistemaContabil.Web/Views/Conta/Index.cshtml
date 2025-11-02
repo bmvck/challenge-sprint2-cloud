@@ -1,0 +1,71 @@
+@model IEnumerable<ContaDto>
+@{
+    ViewData["Title"] = "Contas Contábeis";
+}
+
+<div class="d-flex justify-content-between align-items-center mb-4">
+    <h2><i class="bi bi-journal-text"></i> Contas Contábeis</h2>
+    <a href="@Url.Action("Create")" class="btn btn-success">
+        <i class="bi bi-plus-circle"></i> Nova Conta Contábil
+    </a>
+</div>
+
+@if (Model != null && Model.Any())
+{
+    <div class="table-responsive">
+        <table class="table table-striped table-hover">
+            <thead class="table-dark">
+                <tr>
+                    <th>ID</th>
+                    <th>Nome</th>
+                    <th>Tipo</th>
+                    <th>Descrição Tipo</th>
+                    <th>Ações</th>
+                </tr>
+            </thead>
+            <tbody>
+                @foreach (var item in Model)
+                {
+                    <tr>
+                        <td>@item.IdContaContabil</td>
+                        <td>@item.NomeContaContabil</td>
+                        <td>
+                            @if (item.Tipo == 'R')
+                            {
+                                <span class="badge bg-success">R</span>
+                            }
+                            else
+                            {
+                                <span class="badge bg-danger">D</span>
+                            }
+                        </td>
+                        <td>@item.TipoDescricao</td>
+                        <td>
+                            <div class="btn-group" role="group">
+                                <a href="@Url.Action("Details", new { id = item.IdContaContabil })" 
+                                   class="btn btn-sm btn-info" title="Detalhes">
+                                    <i class="bi bi-eye"></i>
+                                </a>
+                                <a href="@Url.Action("Edit", new { id = item.IdContaContabil })" 
+                                   class="btn btn-sm btn-warning" title="Editar">
+                                    <i class="bi bi-pencil"></i>
+                                </a>
+                                <a href="@Url.Action("Delete", new { id = item.IdContaContabil })" 
+                                   class="btn btn-sm btn-danger" title="Excluir">
+                                    <i class="bi bi-trash"></i>
+                                </a>
+                            </div>
+                        </td>
+                    </tr>
+                }
+            </tbody>
+        </table>
+    </div>
+}
+else
+{
+    <div class="alert alert-info">
+        <i class="bi bi-info-circle"></i> Nenhuma conta contábil cadastrada. 
+        <a href="@Url.Action("Create")" class="alert-link">Clique aqui para criar a primeira.</a>
+    </div>
+}

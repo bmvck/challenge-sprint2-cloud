@@ -2,11 +2,14 @@ package com.fiap.financecontrol.gateways.dtos;
 
 import com.fiap.financecontrol.domains.Vendas;
 import lombok.Data;
+import lombok.EqualsAndHashCode;
+import org.springframework.hateoas.RepresentationModel;
 
 import java.math.BigDecimal;
 
 @Data
-public class VendasResponseDto {
+@EqualsAndHashCode(callSuper = false)
+public class VendasResponseDto extends RepresentationModel<VendasResponseDto> {
 
     private Long id;
     private Long clienteId;

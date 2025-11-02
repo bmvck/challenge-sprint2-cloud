@@ -12,7 +12,7 @@ public class RegistroContabil
     /// Identificador único do registro contábil
     /// </summary>
     [Key]
-    public int IdRegistroContabil { get; set; }
+    public int IdRegCont { get; set; }
 
     /// <summary>
     /// Valor do registro contábil
@@ -54,6 +54,11 @@ public class RegistroContabil
     /// </summary>
     [ForeignKey(nameof(CentroCustoIdCentroCusto))]
     public virtual CentroCusto CentroCusto { get; set; } = null!;
+
+    /// <summary>
+    /// Vendas associadas ao registro contábil
+    /// </summary>
+    public virtual ICollection<Vendas> Vendas { get; set; } = new List<Vendas>();
 
     /// <summary>
     /// Valida se o registro contábil está válido para operações
@@ -118,6 +123,6 @@ public class RegistroContabil
     /// <returns>Descrição do registro</returns>
     public string GetDescricao()
     {
-        return $"Registro: {IdRegistroContabil} - Valor: {Valor:C} - Conta: {ContaIdConta} - Centro: {CentroCustoIdCentroCusto}";
+        return $"Registro: {IdRegCont} - Valor: {Valor:C} - Conta: {ContaIdConta} - Centro: {CentroCustoIdCentroCusto}";
     }
 }

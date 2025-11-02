@@ -107,4 +107,9 @@ public interface IRegistroContabilAppService
     /// <param name="dataFim">Data de fim</param>
     /// <returns>Valor total dos registros no período</returns>
     Task<decimal> CalcularTotalPorPeriodoAsync(DateTime dataInicio, DateTime dataFim);
+
+    /// <summary>
+    /// Busca paginada de registros contábeis
+    /// </summary>
+    Task<PagedResultDto<RegistroContabilDto>> SearchAsync(FiltroRegistroContabilDto filtro);
 }

@@ -1,0 +1,57 @@
+@model AtualizarClienteDto
+@{
+    ViewData["Title"] = "Editar Cliente";
+}
+
+<div class="row">
+    <div class="col-md-8 offset-md-2">
+        <div class="card shadow">
+            <div class="card-header bg-warning text-dark">
+                <h4 class="mb-0"><i class="bi bi-pencil"></i> Editar Cliente</h4>
+            </div>
+            <div class="card-body">
+                <form asp-action="Edit" asp-route-id="@ViewContext.RouteData.Values["id"]" method="post">
+                    <div asp-validation-summary="ModelOnly" class="text-danger mb-3"></div>
+                    
+                    <div class="row">
+                        <div class="col-md-6 mb-3">
+                            <label asp-for="NomeCliente" class="form-label"></label>
+                            <input asp-for="NomeCliente" class="form-control" 
+                                   placeholder="Digite o nome do cliente" maxlength="100" />
+                            <span asp-validation-for="NomeCliente" class="text-danger"></span>
+                        </div>
+
+                        <div class="col-md-6 mb-3">
+                            <label asp-for="Email" class="form-label"></label>
+                            <input asp-for="Email" type="email" class="form-control" 
+                                   placeholder="email@exemplo.com" maxlength="100" />
+                            <span asp-validation-for="Email" class="text-danger"></span>
+                        </div>
+                    </div>
+
+                    <div class="mb-3">
+                        <label asp-for="Ativo" class="form-label"></label>
+                        <select asp-for="Ativo" class="form-select">
+                            <option value="S">Ativo (S)</option>
+                            <option value="N">Inativo (N)</option>
+                        </select>
+                        <span asp-validation-for="Ativo" class="text-danger"></span>
+                    </div>
+
+                    <div class="d-grid gap-2 d-md-flex justify-content-md-end">
+                        <a href="@Url.Action("Index")" class="btn btn-secondary">
+                            <i class="bi bi-arrow-left"></i> Cancelar
+                        </a>
+                        <button type="submit" class="btn btn-warning">
+                            <i class="bi bi-save"></i> Atualizar
+                        </button>
+                    </div>
+                </form>
+            </div>
+        </div>
+    </div>
+</div>
+
+@section Scripts {
+    @{await Html.RenderPartialAsync("_ValidationScriptsPartial");}
+}

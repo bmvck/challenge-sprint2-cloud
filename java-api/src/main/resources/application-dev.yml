@@ -1,9 +1,15 @@
 spring:
   datasource:
     driverClassName: oracle.jdbc.OracleDriver
-    url: jdbc:oracle:thin:@localhost:1521:xe
-    username: ${DB_USERNAME:finance_user}
-    password: ${DB_PASSWORD:finance_pass}
+    url: jdbc:oracle:thin:@140.238.179.84:1521/FREEPDB1
+    username: ${DB_USERNAME:appuser}
+    password: ${DB_PASSWORD:AppPass#2025}
+    hikari:
+      maximum-pool-size: 10
+      minimum-idle: 2
+      connection-timeout: 30000
+      idle-timeout: 600000
+      max-lifetime: 1800000
   jpa:
     hibernate:
       ddl-auto: validate

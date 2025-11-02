@@ -10,7 +10,7 @@ import java.util.ArrayList;
 import java.util.List;
 
 @Entity
-@Table(name = "CONTA")
+@Table(name = "CONTA_CONTABIL")
 @Getter
 @Setter
 @NoArgsConstructor
@@ -21,13 +21,13 @@ public class Conta {
 
     @Id
     @GeneratedValue(strategy = GenerationType.SEQUENCE, generator = "conta_seq")
-    @SequenceGenerator(name = "conta_seq", sequenceName = "CONTA_SEQ", allocationSize = 1)
-    @Column(name = "id_conta")
+    @SequenceGenerator(name = "conta_seq", sequenceName = "conta_seq", allocationSize = 1)
+    @Column(name = "id_conta_contabil")
     private Long id;
 
     @NotBlank
     @Size(max = 70)
-    @Column(name = "nome_conta", nullable = false, length = 70)
+    @Column(name = "nome_conta_contabil", nullable = false, length = 70)
     private String nomeConta;
 
     @NotNull
@@ -36,7 +36,7 @@ public class Conta {
     private TipoConta tipo;
 
     @ManyToOne(fetch = FetchType.LAZY)
-    @JoinColumn(name = "CLIENTE_id_cliente")
+    @JoinColumn(name = "cliente_id_cliente")
     private Cliente cliente;
 
     @OneToMany(mappedBy = "conta", cascade = CascadeType.ALL, fetch = FetchType.LAZY)

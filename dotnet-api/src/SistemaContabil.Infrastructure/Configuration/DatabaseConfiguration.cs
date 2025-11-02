@@ -17,23 +17,17 @@ public static class DatabaseConfiguration
     /// </summary>
     public static readonly string[] ConnectionStrings = new[]
     {
-        // Opção 1: Service Name /orcl (FORMATO CORRETO)
-        "Data Source=oracle.fiap.com.br:1521/orcl;User Id=rm560088;Password=061005;",
+        // Opção 1: Service Name FREEPDB1 (FORMATO CORRETO)
+        "Data Source=140.238.179.84:1521/FREEPDB1;User Id=appuser;Password=AppPass#2025;",
         
-        // Opção 2: Service Name /ORCL (maiúsculo)
-        "Data Source=oracle.fiap.com.br:1521/ORCL;User Id=rm560088;Password=061005;",
+        // Opção 2: Service Name FREEPDB1 com timeout
+        "Data Source=140.238.179.84:1521/FREEPDB1;User Id=appuser;Password=AppPass#2025;Connection Timeout=30;",
         
-        // Opção 3: Service Name /orcl com timeout
-        "Data Source=oracle.fiap.com.br:1521/orcl;User Id=rm560088;Password=061005;Connection Timeout=30;",
+        // Opção 3: Formato TNS (se disponível)
+        "Data Source=(DESCRIPTION=(ADDRESS=(PROTOCOL=TCP)(HOST=140.238.179.84)(PORT=1521))(CONNECT_DATA=(SERVICE_NAME=FREEPDB1)));User Id=appuser;Password=AppPass#2025;",
         
-        // Opção 4: Service Name /ORCL com timeout
-        "Data Source=oracle.fiap.com.br:1521/ORCL;User Id=rm560088;Password=061005;Connection Timeout=30;",
-        
-        // Opção 5: Formato TNS (se disponível)
-        "Data Source=(DESCRIPTION=(ADDRESS=(PROTOCOL=TCP)(HOST=oracle.fiap.com.br)(PORT=1521))(CONNECT_DATA=(SERVICE_NAME=orcl)));User Id=rm560088;Password=061005;",
-        
-        // Opção 6: Formato TNS com ORCL
-        "Data Source=(DESCRIPTION=(ADDRESS=(PROTOCOL=TCP)(HOST=oracle.fiap.com.br)(PORT=1521))(CONNECT_DATA=(SERVICE_NAME=ORCL)));User Id=rm560088;Password=061005;"
+        // Opção 4: Formato TNS com timeout
+        "Data Source=(DESCRIPTION=(ADDRESS=(PROTOCOL=TCP)(HOST=140.238.179.84)(PORT=1521))(CONNECT_DATA=(SERVICE_NAME=FREEPDB1)));User Id=appuser;Password=AppPass#2025;Connection Timeout=30;"
     };
 
     /// <summary>
@@ -64,6 +58,8 @@ public static class DatabaseConfiguration
         services.AddScoped<ICentroCustoRepository, CentroCustoRepository>();
         services.AddScoped<IContaRepository, ContaRepository>();
         services.AddScoped<IRegistroContabilRepository, RegistroContabilRepository>();
+        services.AddScoped<IClienteRepository, ClienteRepository>();
+        services.AddScoped<IVendasRepository, VendasRepository>();
 
         return services;
     }
